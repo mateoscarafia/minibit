@@ -1,0 +1,202 @@
+{
+ "q_1": {
+    "question": "¿Qué es el 'Event Loop' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Un ciclo que ejecuta tareas sincrónicas en orden", "class": "option-a", "response": "1-A" },
+      { "letter": "B", "text": "Un mecanismo que maneja operaciones asíncronas usando una cola de eventos", "class": "option-b", "response": "1-B" },
+      { "letter": "C", "text": "Una función para iterar sobre arrays", "class": "option-c", "response": "1-C" },
+      { "letter": "D", "text": "Un módulo para crear bucles infinitos", "class": "option-d", "response": "1-D" }
+    ],
+    "answer": "1-B"
+  },
+  "q_2": {
+    "question": "¿Cómo se puede mejorar el rendimiento de un servidor Node.js?",
+    "options": [
+      { "letter": "A", "text": "Usando el módulo 'cluster' para aprovechar múltiples núcleos de CPU", "class": "option-a", "response": "2-A" },
+      { "letter": "B", "text": "Escribiendo todo el código en un solo archivo", "class": "option-b", "response": "2-B" },
+      { "letter": "C", "text": "Desactivando el garbage collector", "class": "option-c", "response": "2-C" },
+      { "letter": "D", "text": "Usando sólo callbacks en lugar de promesas", "class": "option-d", "response": "2-D" }
+    ],
+    "answer": "2-A"
+  },
+  "q_3":{
+    "question": "¿Qué es 'stream.pipeline()' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Una forma de conectar streams manejando errores y limpieza automáticamente", "class": "option-a", "response": "3-A" },
+      { "letter": "B", "text": "Un módulo para tuberías físicas", "class": "option-b", "response": "3-B" },
+      { "letter": "C", "text": "Una función obsoleta en versiones recientes", "class": "option-c", "response": "3-C" },
+      { "letter": "D", "text": "Un método para comprimir archivos", "class": "option-d", "response": "3-D" }
+    ],
+    "answer": "3-A"
+  },
+  "q_4":{
+    "question": "¿Qué hace el método 'util.promisify()'?",
+    "options": [
+      { "letter": "A", "text": "Convierte funciones que usan callbacks a versiones que devuelven promesas", "class": "option-a", "response": "4-A" },
+      { "letter": "B", "text": "Optimiza promesas para ejecución más rápida", "class": "option-b", "response": "4-B" },
+      { "letter": "C", "text": "Crea promesas con un tiempo de expiración", "class": "option-c", "response": "4-C" },
+      { "letter": "D", "text": "Es un alias de Promise.resolve()", "class": "option-d", "response": "4-D" }
+    ],
+    "answer": "4-A"
+  },
+  "q_5":{
+    "question": "¿Qué es 'worker_threads' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Un módulo para ejecutar JavaScript en hilos separados", "class": "option-a", "response": "5-A" },
+      { "letter": "B", "text": "Un sistema para manejar workers en clusters", "class": "option-b", "response": "5-B" },
+      { "letter": "C", "text": "Una API obsoleta para threads", "class": "option-c", "response": "5-C" },
+      { "letter": "D", "text": "Un patrón para manejar callbacks", "class": "option-d", "response": "5-D" }
+    ],
+    "answer": "5-A"
+  },
+  "q_6":{
+    "question": "¿Cómo se puede manejar memoria compartida entre Worker Threads?",
+    "options": [
+      { "letter": "A", "text": "Usando SharedArrayBuffer", "class": "option-a", "response": "6-A" },
+      { "letter": "B", "text": "No es posible en Node.js", "class": "option-b", "response": "6-B" },
+      { "letter": "C", "text": "Con el módulo 'shared_memory'", "class": "option-c", "response": "6-C" },
+      { "letter": "D", "text": "Usando process.memory()", "class": "option-d", "response": "6-D" }
+    ],
+    "answer": "6-A"
+  },
+  "q_7":{
+    "question": "¿Qué es 'async_hooks' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Una API para rastrear recursos asíncronos durante su ciclo de vida", "class": "option-a", "response": "7-A" },
+      { "letter": "B", "text": "Un módulo para enganchar eventos de teclado", "class": "option-b", "response": "7-B" },
+      { "letter": "C", "text": "Un sistema para manejar hooks en funciones async", "class": "option-c", "response": "7-C" },
+      { "letter": "D", "text": "Una librería para testing de código asíncrono", "class": "option-d", "response": "7-D" }
+    ],
+    "answer": "7-A"
+  },
+  "q_8": {
+    "question": "¿Qué ventaja tiene usar 'Buffer.alloc()' sobre 'new Buffer()'?",
+    "options": [
+      { "letter": "A", "text": "Buffer.alloc() inicializa la memoria llenándola con ceros, evitando datos sensibles en memoria", "class": "option-a", "response": "8-A" },
+      { "letter": "B", "text": "Ninguna, son equivalentes", "class": "option-b", "response": "8-B" },
+      { "letter": "C", "text": "new Buffer() está obsoleto y no funciona", "class": "option-c", "response": "8-C" },
+      { "letter": "D", "text": "Buffer.alloc() es más rápido pero menos seguro", "class": "option-d", "response": "8-D" }
+    ],
+    "answer": "8-A"
+  },
+  "q_9":{
+    "question": "¿Qué es el 'REPL' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Read-Eval-Print-Loop: entorno interactivo para ejecutar comandos JavaScript", "class": "option-a", "response": "9-A" },
+      { "letter": "B", "text": "Runtime Exception Processing Layer", "class": "option-b", "response": "9-B" },
+      { "letter": "C", "text": "Remote Execution Protocol Listener", "class": "option-c", "response": "9-C" },
+      { "letter": "D", "text": "Un módulo para manejar loops recursivos", "class": "option-d", "response": "9-D" }
+    ],
+    "answer": "9-A"
+  },
+  "q_10":{
+    "question": "¿Cómo se puede inspeccionar memoria en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Usando el flag --inspect con Chrome DevTools", "class": "option-a", "response": "10-A" },
+      { "letter": "B", "text": "Con el módulo 'memory-inspector'", "class": "option-b", "response": "10-B" },
+      { "letter": "C", "text": "Node.js no permite inspeccionar memoria", "class": "option-c", "response": "10-C" },
+      { "letter": "D", "text": "Usando console.memory()", "class": "option-d", "response": "10-D" }
+    ],
+    "answer": "10-A"
+  },
+  "q_11":{
+    "question": "¿Qué es 'N-API' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Una API independiente del runtime para construir addons nativos", "class": "option-a", "response": "11-A" },
+      { "letter": "B", "text": "Un protocolo de red para Node.js", "class": "option-b", "response": "11-B" },
+      { "letter": "C", "text": "Un nuevo paquete manager", "class": "option-c", "response": "11-C" },
+      { "letter": "D", "text": "Un framework para APIs REST", "class": "option-d", "response": "11-D" }
+    ],
+    "answer": "11-A"
+  },
+  "q_12":{
+    "question": "¿Qué ventajas tiene usar 'ES modules' sobre 'CommonJS' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Sintaxis estandarizada, carga asíncrona y mejor interoperabilidad con navegadores", "class": "option-a", "response": "12-A" },
+      { "letter": "B", "text": "CommonJS es más rápido y siempre preferible", "class": "option-b", "response": "12-B" },
+      { "letter": "C", "text": "Ninguna, son exactamente iguales", "class": "option-c", "response": "12-C" },
+      { "letter": "D", "text": "ES modules sólo funciona en el navegador", "class": "option-d", "response": "12-D" }
+    ],
+    "answer": "12-A"
+  },
+  "q_13": {
+    "question": "¿Qué es 'libuv' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Una librería multiplataforma para manejar operaciones de I/O asíncronas", "class": "option-a", "response": "13-A" },
+      { "letter": "B", "text": "Un módulo para manipulación de colores", "class": "option-b", "response": "13-B" },
+      { "letter": "C", "text": "El motor JavaScript de Node.js", "class": "option-c", "response": "13-C" },
+      { "letter": "D", "text": "Un formato de archivo usado por npm", "class": "option-d", "response": "13-D" }
+    ],
+    "answer": "13-A"
+  },
+  "q_15":{
+    "question": "¿Cómo se puede prevenir el 'Callback Hell'?",
+    "options": [
+      { "letter": "A", "text": "Usando promesas, async/await o librerías como 'async'", "class": "option-a", "response": "14-A" },
+      { "letter": "B", "text": "Anidando todos los callbacks necesarios", "class": "option-b", "response": "14-B" },
+      { "letter": "C", "text": "No es posible evitarlo en Node.js", "class": "option-c", "response": "14-C" },
+      { "letter": "D", "text": "Usando sólo operaciones síncronas", "class": "option-d", "response": "14-D" }
+    ],
+    "answer": "14-A"
+  },
+  "q_16":{
+    "question": "¿Qué es 'process.nextTick()'?",
+    "options": [
+      { "letter": "A", "text": "Un método para posponer ejecución de callback hasta la siguiente iteración del event loop", "class": "option-a", "response": "15-A" },
+      { "letter": "B", "text": "Un temporizador para ejecutar código después de un delay", "class": "option-b", "response": "15-B" },
+      { "letter": "C", "text": "Una forma de terminar el proceso actual", "class": "option-c", "response": "15-C" },
+      { "letter": "D", "text": "Un método obsoleto en Node.js moderno", "class": "option-d", "response": "15-D" }
+    ],
+    "answer": "15-A"
+  },
+  "q_17":{
+    "question": "¿Qué diferencia hay entre 'setImmediate()' y 'process.nextTick()'?",
+    "options": [
+      { "letter": "A", "text": "nextTick() se ejecuta antes de la siguiente iteración del event loop, setImmediate() después", "class": "option-a", "response": "16-A" },
+      { "letter": "B", "text": "No hay diferencia", "class": "option-b", "response": "16-B" },
+      { "letter": "C", "text": "setImmediate() es más rápido", "class": "option-c", "response": "16-C" },
+      { "letter": "D", "text": "nextTick() está obsoleto", "class": "option-d", "response": "16-D" }
+    ],
+    "answer": "16-A"
+  },
+  "q_18":{
+    "question": "¿Qué es 'Domain' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Un mecanismo obsoleto para manejar errores en operaciones asíncronas", "class": "option-a", "response": "17-A" },
+      { "letter": "B", "text": "Un módulo para manejar dominios de internet", "class": "option-b", "response": "17-B" },
+      { "letter": "C", "text": "Un sistema para clustering", "class": "option-c", "response": "17-C" },
+      { "letter": "D", "text": "Un protocolo de red", "class": "option-d", "response": "17-D" }
+    ],
+    "answer": "17-A"
+  },
+  "q_19":{
+    "question": "¿Cómo se puede implementar caching en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Usando módulos como 'node-cache', Redis o memoización", "class": "option-a", "response": "18-A" },
+      { "letter": "B", "text": "Node.js no soporta caching", "class": "option-b", "response": "18-B" },
+      { "letter": "C", "text": "Sólo con bases de datos externas", "class": "option-c", "response": "18-C" },
+      { "letter": "D", "text": "Modificando el core de Node.js", "class": "option-d", "response": "18-D" }
+    ],
+    "answer": "18-A"
+  },
+  "q_20":{
+    "question": "¿Qué es 'Tracing' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "Capturar información detallada sobre ejecución para diagnóstico de performance", "class": "option-a", "response": "19-A" },
+      { "letter": "B", "text": "Un módulo para dibujar gráficos", "class": "option-b", "response": "19-B" },
+      { "letter": "C", "text": "Un patrón de diseño para callbacks", "class": "option-c", "response": "19-C" },
+      { "letter": "D", "text": "Un sistema para rastrear paquetes npm", "class": "option-d", "response": "19-D" }
+    ],
+    "answer": "19-A"
+  },
+  "q_21":{
+    "question": "¿Qué es 'WASI' en Node.js?",
+    "options": [
+      { "letter": "A", "text": "WebAssembly System Interface, para ejecutar WebAssembly de forma segura", "class": "option-a", "response": "20-A" },
+      { "letter": "B", "text": "Web API Security Interface", "class": "option-b", "response": "20-B" },
+      { "letter": "C", "text": "Windows Async System Integration", "class": "option-c", "response": "20-C" },
+      { "letter": "D", "text": "Un módulo para manejar WASM obsoleto", "class": "option-d", "response": "20-D" }
+    ],
+    "answer": "20-A"
+  }
+}
