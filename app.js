@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const WebSocket = require("ws");
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,6 +10,7 @@ const {
   resultsTech,
   answerResponse,
   contentPage,
+  login
 } = require("./controllers/controllers");
 
 const { loadGameData, gameStarter } = require("./utils/utils");
@@ -17,6 +19,10 @@ const { loadGameData, gameStarter } = require("./utils/utils");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
+
+// Middleware for parsing JSON and URL-encoded data
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 /// ENDPOINTS  //////////////////////////////////////////
 
@@ -29,6 +35,7 @@ app.get("/exam/:tech", (req, res) => {
 app.get("/", (req, res) => {
   res.render("login");
 });
+app.post("/login", login);
 app.get("/intro", (req, res) => {
   res.render("intro");
 });

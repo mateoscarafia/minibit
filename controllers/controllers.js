@@ -2,6 +2,7 @@ const MarkdownIt = require("markdown-it");
 const md = new MarkdownIt();
 const fs = require("fs");
 const path = require("path");
+const { sequelize } = require("../utils/database");
 
 const resultsTech = (req, res) => {
   const rightAnswers = [];
@@ -88,4 +89,26 @@ const contentPage = (req, res) => {
   }
 };
 
-module.exports = { resultsTech, answerResponse, contentPage };
+const login = async (req, res) => {
+  console.log(req.body)
+  try {
+    const [results] = await sequelize.query(
+      "SELECT * FROM users WHERE email = :email AND password = :password",
+      {
+        replacements: {
+          email: req.body.email,
+          password: req.body.password,
+        },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    console.log("Results:", results);
+    return results;
+  } catch (error) {
+    console.error("Error executing query:", error);
+    throw error;
+  }
+};
+
+module.exports = { resultsTech, answerResponse, contentPage, login };
