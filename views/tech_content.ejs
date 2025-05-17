@@ -72,6 +72,7 @@
         color: white;
         padding: 20px;
         overflow-y: auto;
+        background: url("/images/background.jpg") no-repeat center center fixed;
       }
 
       .menu-vertical ul {
@@ -94,6 +95,7 @@
         font-size: 2rem;
         margin-bottom: 10px;
         letter-spacing: 2px;
+        background: url("/images/logo.jpg") no-repeat center center fixed;
       }
 
       .menu-search {
@@ -118,11 +120,11 @@
       }
 
       .menu-item:hover {
-        background-color: #34495e;
+        background-color: #1d66e0;
       }
 
       .menu-item.active {
-        background-color: #3498db;
+        background-color: #1d66e0;
         font-weight: bold;
       }
       /* Contenedor de markdown */
@@ -134,8 +136,9 @@
         box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
       }
       .take-test-button {
-        background-color: #3498db; /* Button color */
-        color: white; /* Text color */
+        font-weight: bold;
+        background-color: #44d17e; /* Button color */
+        color: #2c2c2c; /* Text color */
         border: none; /* Remove default border */
         padding: 12px 24px; /* Vertical and horizontal padding */
         text-align: center; /* Center text */
@@ -163,6 +166,7 @@
         const url = window.location.href;
         if (url.includes("javascript")) return "Javascript";
         if (url.includes("typescript")) return "Typescript";
+        if (url.includes("design_patterns")) return "Patrones Diseño OOP";
       }
 
       setTimeout(() => {
@@ -173,16 +177,23 @@
   </head>
   <body>
     <nav class="menu-vertical">
-      <div class="menu-header"><div class="menu-title">Contenido</div></div>
+      <div class="menu-header"><img id="logo-img" width="150px" src="http://localhost:3000/images/logo.png" style="border-radius: 10px;"/></div>
       <ul class="menu-items">
         <li
           onclick="navigateTo('/content/javascript/1')"
           class="menu-item active"
+          id="menu-item-javascript"
         >
           Javascript
         </li>
         <li onclick="navigateTo('/content/typescript/1')" class="menu-item">
           Typescript
+        </li>
+        <li
+          onclick="navigateTo('/content/design_patterns/1')"
+          class="menu-item"
+        >
+          Patrones de Diseño
         </li>
       </ul>
       <button
