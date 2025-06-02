@@ -7,47 +7,55 @@ var parsedResults = [];
 var gameInterval = null;
 
 //SEND USER ANSWER
-const fetchServer = (ans) => {
+const saveAnswersLocalStorage = (ans) => {
   if (cancelFetch) return;
   cancelFetch = true;
-  const url = new URL(window.location.href);
-  fetch(
-    `${url.origin}/answer/${ans}--${userId}--${localStorage.getItem(
-      "nombre-user"
-    )}`
-  );
+  const answers = localStorage.getItem("minibit-answers");
+  if (!answers) {
+    localStorage.setItem("minibit-answers", JSON.stringify([ans]));
+  } else {
+    let parsedAnswers = JSON.parse(answers);
+    localStorage.setItem(
+      "minibit-answers",
+      JSON.stringify([...parsedAnswers, ans])
+    );
+  }
 };
 
 //FETCH USER ANSWERS
-const fetchAnswers = (ans) => {
-  const url = new URL(window.location.href);
-  fetch(`${url.origin}/results/${defineTech()}`).then(async (res) => {
-    const results = await res.json();
-    const result_element = document.getElementById("prize-levels-id");
-    let content = "";
-    parsedResults = results.map((result) => {
-      const result_data = result.split("----");
-      return [result_data[1], Number(result_data[2])];
+const fetchAnswers = () => {
+  if (endGame) {
+    const url = new URL(window.location.href);
+    fetch(`${url.origin}/results/${defineTech()}`).then(async (res) => {
+      const results = await res.json();
+      const userAnswers = JSON.parse(localStorage.getItem("minibit-answers"));
+
+      const correctAnswers = userAnswers.filter((item) =>
+        results.includes(item)
+      ).length;
+
+      const finalResult = (correctAnswers * 100) / results.length;
+
+      fetch(`${url.origin}/save-exam-result/${defineTech()}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          token: localStorage.getItem("minibit-token"),
+        },
+        body: JSON.stringify({
+          userAnswers: userAnswers,
+          result: finalResult,
+        }),
+      });
+
+      //alert(finalResult);
     });
-    parsedResults.sort((a, b) => b[1] - a[1]);
-    parsedResults.forEach((result) => {
-      content =
-        content +
-        `<div class="prize-level">${result[0]} - ${
-          Number(result[1]) * 10
-        }pts</div>`;
-    });
-    result_element.innerHTML = content;
-    if (endGame) {
-      document.querySelector(
-        ".question-container"
-      ).textContent = `🏆🏆 ${parsedResults[0][0]} 🏆🏆`;
-    }
-  });
+  }
 };
 
 //FETCH IF START IS TRUE
 const fetchCheckStart = (ans) => {
+  localStorage.setItem("minibit-answers", JSON.stringify([]));
   /* const url = new URL(window.location.href);
   fetch(`${url.origin}/check-start`).then(async (res) => {
     const resp = await res.json();
@@ -107,12 +115,12 @@ gameInterval = setInterval(() => {
         return;
       }
       document.querySelector(".question-container").textContent = question;
-      document.getElementById("prize-levels-id").style.display = "block";
+      //document.getElementById("prize-levels-id").style.display = "block";
       const optionsContainer = document.querySelector(".options-container");
       optionsContainer.innerHTML = options
         .map((option) => {
           return `
-                          <div onclick="fetchServer('${option.response}')" class="option ${option.class}">
+                          <div onclick="saveAnswersLocalStorage('${option.response}')" class="option ${option.class}">
                               <div class="option-letter">${option.letter}</div>
                               <div class="option-text">${option.text}</div>
                           </div>

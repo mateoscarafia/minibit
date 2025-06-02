@@ -1,5 +1,8 @@
 const fs = require("fs");
 const path = require("path");
+const jwt = require("jsonwebtoken");
+const secretKey =
+  "ADFASDFADSGFSG478563453F25623945623BF985762349563G3B265234___";
 
 const loadGameData = (counter, tech) => {
   tech = tech.replaceAll(" ", "_");
@@ -17,7 +20,32 @@ const gameStarter = () => {
   return JSON.parse(rawData);
 };
 
+const generateToken = (user) => {
+  return jwt.sign(
+    {
+      userId: user.id,
+      company: user.company,
+      email: user.email,
+    },
+    secretKey,
+    { expiresIn: "5h" }
+  );
+};
+
+const decodeToken = (token) => {
+  return jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) {
+      return null;
+    }
+    console.log(decoded);
+    return decoded;
+  });
+};
+
 module.exports = {
   loadGameData,
   gameStarter,
+  generateToken,
+  secretKey,
+  decodeToken,
 };

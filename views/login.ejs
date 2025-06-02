@@ -83,13 +83,49 @@
       function navigateTo(url) {
         window.location.href = "/content/javascript/1";
       }
+      async function login() {
+        const email = document.getElementById("email").value || "";
+        const password = document.getElementById("password").value || "";
+
+        if (!email || !password) {
+          alert("Datos incorrectos");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${window.location.protocol}//${window.location.host}/login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: email,
+                password: password,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            alert("Lo sentimos, algo falló.");
+            return
+          }
+
+          const data = await response.json();
+          localStorage.setItem("minibit-token", data.token);
+          window.location.href = "/content/javascript/1";
+        } catch (error) {
+          alert("Lo sentimos, algo falló.");
+        }
+      }
     </script>
   </head>
   <body>
     <div class="login-container">
       <div class="input-group">
-        <label for="username">Usuario</label>
-        <input type="text" id="username" placeholder="Ingrese su usuario" />
+        <label for="username">Email</label>
+        <input type="text" id="email" placeholder="Ingrese su email" />
       </div>
 
       <div class="input-group">
@@ -101,7 +137,7 @@
         />
       </div>
 
-      <button onclick="navigateTo()" class="login-button">Login</button>
+      <button onclick="login()" class="login-button">Login</button>
     </div>
   </body>
 </html>

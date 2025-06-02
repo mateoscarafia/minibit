@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const WebSocket = require("ws");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,7 +10,9 @@ const {
   resultsTech,
   answerResponse,
   contentPage,
-  login
+  login,
+  verifyToken,
+  saveExamResult,
 } = require("./controllers/controllers");
 
 const { loadGameData, gameStarter } = require("./utils/utils");
@@ -51,8 +53,10 @@ app.get("/get-game-data/:counter/:tech", (req, res) => {
   return res.json(loadGameData(Number(req.params.counter), req.params.tech));
 });
 app.get("/results/:tech", resultsTech);
+app.post("/save-exam-result/:tech", saveExamResult);
 app.get("/answer/:response", answerResponse);
 app.get("/content/:tech/:page", contentPage);
+app.get("/verify-token/:token", verifyToken);
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

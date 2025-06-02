@@ -156,6 +156,16 @@
       }
     </style>
     <script>
+      async function testAuth() {
+        const response = await fetch(
+          `${window.location.protocol}//${
+            window.location.host
+          }/verify-token/${localStorage.getItem("minibit-token")}`
+        );
+        if (!response.ok) {
+          window.location.href = "/";
+        }
+      }
       function takeTest() {
         window.location.href = "/exam/" + defineTech();
       }
@@ -172,12 +182,20 @@
       setTimeout(() => {
         document.getElementById("take-test-button-id").innerHTML =
           "Evaluacion " + defineTech();
+        testAuth();
       }, 500);
     </script>
   </head>
   <body>
     <nav class="menu-vertical">
-      <div class="menu-header"><img id="logo-img" width="150px" src="http://localhost:3000/images/logo.png" style="border-radius: 10px;"/></div>
+      <div class="menu-header">
+        <img
+          id="logo-img"
+          width="150px"
+          src="http://localhost:3000/images/logo.png"
+          style="border-radius: 10px"
+        />
+      </div>
       <ul class="menu-items">
         <li
           onclick="navigateTo('/content/javascript/1')"

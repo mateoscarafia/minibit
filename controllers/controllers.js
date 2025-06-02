@@ -3,6 +3,8 @@ const md = new MarkdownIt();
 const fs = require("fs");
 const path = require("path");
 const { sequelize } = require("../utils/database");
+const { generateToken, secretKey, decodeToken } = require("../utils/utils");
+const jwt = require("jsonwebtoken");
 
 const resultsTech = (req, res) => {
   const rightAnswers = [];
@@ -15,27 +17,38 @@ const resultsTech = (req, res) => {
     rightAnswers.push(rawDataQuestions[`${key}`].answer);
   }
 
-  const userAnswers = [];
-  const answersParsed = {};
+  return res.json(rightAnswers);
+};
 
-  const files = fs.readdirSync(path.join(__dirname, "../exams/answers"));
-  files.forEach((file) => {
-    const rawDataAnswers = JSON.parse(
-      fs.readFileSync(path.join(__dirname, "../exams", `answers/${file}`))
-    );
-    answersParsed[`${file.split(".")[0]}----${rawDataAnswers.username}`] =
-      rawDataAnswers.answers;
-  });
+const saveExamResult = async (req, res) => {
+  const tech = req.params.tech;
 
-  for (let key in answersParsed) {
-    userAnswers.push(
-      `${key}----${
-        answersParsed[key].filter((x) => rightAnswers.includes(x)).length
-      }`
-    );
+  const decodedToken = decodeToken(req.headers.token);
+
+  const rightAnswers = [];
+  const rawDataQuestions = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "../exams", req.params.tech + ".json"))
+  );
+  for (let key in rawDataQuestions) {
+    rightAnswers.push(rawDataQuestions[`${key}`].answer);
   }
+  const userCorrectAnswers = userAnswers.filter((item) =>
+    rightAnswers.includes(item)
+  ).length;
+  const finalResult = (userCorrectAnswers * 100) / results.length;
 
-  return res.json(userAnswers);
+  const [results] = await sequelize.query(
+    `INSERT INTO user_exam_result (user_id, tech, score) 
+  VALUES (:user_id, :tech, :score);`,
+    {
+      replacements: {
+        user_id: decodedToken.userId,
+        tech: tech,
+        score: finalResult,
+      },
+      type: sequelize.QueryTypes.INSERT,
+    }
+  );
 };
 
 const answerResponse = (req, res) => {
@@ -90,7 +103,6 @@ const contentPage = (req, res) => {
 };
 
 const login = async (req, res) => {
-  console.log(req.body)
   try {
     const [results] = await sequelize.query(
       "SELECT * FROM users WHERE email = :email AND password = :password",
@@ -103,12 +115,29 @@ const login = async (req, res) => {
       }
     );
 
-    console.log("Results:", results);
-    return results;
+    if (!results) return res.status(400).send("Error");
+
+    return res.json({ token: generateToken(results) });
   } catch (error) {
-    console.error("Error executing query:", error);
-    throw error;
+    return res.status(400).send("Error");
   }
 };
 
-module.exports = { resultsTech, answerResponse, contentPage, login };
+const verifyToken = async (req, res) => {
+  console.log(req.params.token);
+  jwt.verify(req.params.token, secretKey, (err, decoded) => {
+    if (err) {
+      return res.status(401).send("Error");
+    }
+    return res.status(200);
+  });
+};
+
+module.exports = {
+  resultsTech,
+  answerResponse,
+  contentPage,
+  login,
+  verifyToken,
+  saveExamResult,
+};

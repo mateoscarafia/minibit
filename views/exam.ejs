@@ -13,7 +13,7 @@
       <div class="options-container">
         <% options.forEach(option=> { %>
         <div
-          onclick="fetchServer('<%= option.response %>')"
+          onclick="saveAnswersLocalStorage('<%= option.response %>')"
           class="option <%= option.class %>"
         >
           <div class="option-letter"><%= option.letter %></div>
