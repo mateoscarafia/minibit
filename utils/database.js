@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize("minibit_study", "root", "", {
+const sequelize = new Sequelize("minibit_study", "root", "your_new_password", {
   host: "localhost",
   dialect: "mysql",
 });

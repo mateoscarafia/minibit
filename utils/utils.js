@@ -37,7 +37,6 @@ const decodeToken = (token) => {
     if (err) {
       return null;
     }
-    console.log(decoded);
     return decoded;
   });
 };
