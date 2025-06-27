@@ -145,12 +145,10 @@ const checkExamDate = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  console.log(results)
   const referenceDate = new Date(results.created);
   const currentDate = new Date();
   const oneMonthLater = new Date(referenceDate);
   oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
-  console.log(currentDate >= oneMonthLater)
   if (currentDate >= oneMonthLater) return res.status(200).send({});
   return res.status(400).send({});
 };
