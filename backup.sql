@@ -27,7 +27,7 @@ CREATE TABLE `company` (
   `name` varchar(255) NOT NULL,
   `pass_phrase` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,6 +36,7 @@ CREATE TABLE `company` (
 
 LOCK TABLES `company` WRITE;
 /*!40000 ALTER TABLE `company` DISABLE KEYS */;
+INSERT INTO `company` VALUES (1,'ACID LABS','acid_labs_passphrase');
 /*!40000 ALTER TABLE `company` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -51,7 +52,7 @@ CREATE TABLE `company_content` (
   `company_id` int NOT NULL,
   `content_id` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,6 +61,7 @@ CREATE TABLE `company_content` (
 
 LOCK TABLES `company_content` WRITE;
 /*!40000 ALTER TABLE `company_content` DISABLE KEYS */;
+INSERT INTO `company_content` VALUES (1,1,1);
 /*!40000 ALTER TABLE `company_content` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,7 +77,7 @@ CREATE TABLE `content` (
   `name` varchar(255) NOT NULL,
   `filename` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -84,6 +86,7 @@ CREATE TABLE `content` (
 
 LOCK TABLES `content` WRITE;
 /*!40000 ALTER TABLE `content` DISABLE KEYS */;
+INSERT INTO `content` VALUES (1,'Javascript','javascript');
 /*!40000 ALTER TABLE `content` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,9 +100,9 @@ DROP TABLE IF EXISTS `user_tech_skills`;
 CREATE TABLE `user_tech_skills` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `tech` varchar(255) NOT NULL,
   `score` int NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `content_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_tech_skills_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
@@ -112,7 +115,6 @@ CREATE TABLE `user_tech_skills` (
 
 LOCK TABLES `user_tech_skills` WRITE;
 /*!40000 ALTER TABLE `user_tech_skills` DISABLE KEYS */;
-INSERT INTO `user_tech_skills` VALUES (1,1,'Javascript',66,'2025-06-17 19:48:10');
 /*!40000 ALTER TABLE `user_tech_skills` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,4 +155,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-27  8:28:30
+-- Dump completed on 2025-06-27 10:13:13

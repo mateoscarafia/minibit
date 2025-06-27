@@ -24,7 +24,7 @@ const generateToken = (user) => {
   return jwt.sign(
     {
       userId: user.id,
-      company: user.company,
+      companyId: user.company_id,
       email: user.email,
     },
     secretKey,
