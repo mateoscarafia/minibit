@@ -67,10 +67,10 @@ const fetchCheckStart = (ans) => {
 };
 
 function defineTech() {
-  const url = window.location.href;
-  if (url.includes("Javascript")) return "Javascript";
-  if (url.includes("Typescript")) return "Typescript";
+  return window.location.pathname.split("/")[2]
 }
+
+console.log(defineTech())
 
 //FETCH QUESTIONS
 const fetchGameData = (ans) => {

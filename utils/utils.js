@@ -32,6 +32,17 @@ const generateToken = (user) => {
   );
 };
 
+const generateTokenAdmin = (company) => {
+  return jwt.sign(
+    {
+      companyId: company.id,
+      isCompany: true,
+    },
+    secretKey,
+    { expiresIn: "5h" }
+  );
+};
+
 const decodeToken = (token) => {
   return jwt.verify(token, secretKey, (err, decoded) => {
     if (err) {
@@ -47,4 +58,5 @@ module.exports = {
   generateToken,
   secretKey,
   decodeToken,
+  generateTokenAdmin,
 };

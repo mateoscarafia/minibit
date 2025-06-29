@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ACID LABS Challenge</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: url("/images/background.jpg") no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .admin-container {
+      width: 100%;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .exam-results {
+      height: 700px;
+      width: 600px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+
+    .exam-results-header {
+      width: 100%;
+      height: 80px;
+    }
+
+    .exam-results-item {
+      width: 98%;
+      margin-left: 1%;
+      padding: 10px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .exam-results-item:hover {
+      background-color: #f1f1f1;
+    }
+
+    .exam-results-items-container {
+      width: 100%;
+      height: 610px;
+      overflow-y: scroll;
+    }
+
+    .color-ref {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-container">
+    <div class="exam-results">
+      <div class="exam-results-header"></div>
+      <div class="exam-results-items-container">
+        <% results.forEach((result)=> { %>
+          <div class="exam-results-item">
+            <span>
+              <%= result.email %>
+            </span>
+            <span><b>
+                <%= result.name %>
+              </b></span>
+            <span>
+              <%= result.created %>
+            </span>
+            <span>
+              <%= result.score %>
+            </span>
+            <div class="color-ref"></div>
+          </div>
+          <% }); %>
+
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+</script>
+
+</html>

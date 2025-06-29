@@ -3,7 +3,7 @@ const md = new MarkdownIt();
 const fs = require("fs");
 const path = require("path");
 const { sequelize } = require("../utils/database");
-const { generateToken, secretKey, decodeToken } = require("../utils/utils");
+const { generateToken, secretKey, decodeToken, generateTokenAdmin } = require("../utils/utils");
 const jwt = require("jsonwebtoken");
 
 const resultsTech = (req, res) => {
@@ -21,8 +21,8 @@ const resultsTech = (req, res) => {
 };
 
 const saveExamResult = async (req, res) => {
+  let finalResult = 0
   try {
-    const tech = req.params.tech;
     const userAnswers = req.body.userAnswers
     const decodedToken = decodeToken(req.headers.token);
     const rightAnswers = [];
@@ -35,20 +35,29 @@ const saveExamResult = async (req, res) => {
     const userCorrectAnswers = userAnswers.filter((item) =>
       rightAnswers.includes(item)
     ).length;
-    const finalResult = (userCorrectAnswers * 100) / rightAnswers.length;
+    finalResult = (userCorrectAnswers * 100) / rightAnswers.length;
+    const [content] = await sequelize.query(
+      "SELECT id FROM content WHERE filename = :filename",
+      {
+        replacements: {
+          filename: req.params.tech,
+        },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
     await sequelize.query(
-      `INSERT INTO user_tech_skills (user_id, tech, score) 
-  VALUES (:user_id, :tech, :score);`,
+      `INSERT INTO user_tech_skills (user_id, content_id, score) 
+  VALUES (:user_id, :content_id,  :score);`,
       {
         replacements: {
           user_id: decodedToken.userId,
-          tech: tech,
+          content_id: content.id,
           score: Math.floor(finalResult),
         },
         type: sequelize.QueryTypes.INSERT,
       }
     );
-  } catch (err) { res.status(500).json() }
+  } catch (err) { console.log(err); res.status(500).json() }
   return res.json({ resultado: Math.floor(finalResult) });
 };
 
@@ -82,23 +91,29 @@ const answerResponse = (req, res) => {
   return res.json();
 };
 
-const contentPage = (req, res) => {
-  const tech = req.params.tech;
-  const page = req.params.page;
+const contentPage = async (req, res) => {
+  const content = req.params.content;
+  const token = req.params.token;
+  const decoded = decodeToken(token)
+  const techs = await sequelize.query(
+    `SELECT *
+      FROM content
+      INNER JOIN company_content ON content.id = company_content.content_id WHERE company_content.company_id =  :company_id`,
+    {
+      replacements: {
+        company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
   try {
-    // Leer el archivo markdown
     const markdownContent = fs.readFileSync(
-      path.join(__dirname, `../content/${tech}`, `${tech}_${page}.md`),
+      path.join(__dirname, `../content`, `${content}.md`),
       "utf8"
     );
-
-    // Convertir markdown a HTML
     const htmlContent = md.render(markdownContent);
-
-    // Renderizar la plantilla EJS pasando el contenido HTML
-    res.render("tech_content", { content: htmlContent });
+    res.render("tech_content", { content: htmlContent, techs: techs });
   } catch (error) {
-    console.log(error);
     res.status(500).send("Error al cargar el documento markdown");
   }
 };
@@ -124,6 +139,27 @@ const login = async (req, res) => {
   }
 };
 
+const loginAdmin = async (req, res) => {
+  try {
+    const [results] = await sequelize.query(
+      "SELECT * FROM company WHERE pass_phrase = :passphrase",
+      {
+        replacements: {
+          passphrase: req.body.passphrase,
+        },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    if (!results) return res.status(400).send("Error");
+
+    return res.json({ token: generateTokenAdmin(results) });
+  } catch (error) {
+    console.log(error)
+    return res.status(400).send("Error");
+  }
+};
+
 const verifyToken = async (req, res) => {
   jwt.verify(req.params.token, secretKey, (err, decoded) => {
     if (err) {
@@ -135,16 +171,26 @@ const verifyToken = async (req, res) => {
 
 const checkExamDate = async (req, res) => {
   const user = decodeToken(req.body.token)
-  const [results] = await sequelize.query(
-    "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND tech = :tech",
+  const [content] = await sequelize.query(
+    "SELECT id FROM content WHERE filename = :filename",
     {
       replacements: {
-        user_id: user.userId,
-        tech: "Javascript",
+        filename: req.body.tech,
       },
       type: sequelize.QueryTypes.SELECT,
     }
   );
+  const [results] = await sequelize.query(
+    "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND content_id = :content_id",
+    {
+      replacements: {
+        user_id: user.userId,
+        content_id: content.id,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+  if (!results) return res.status(200).send({});
   const referenceDate = new Date(results.created);
   const currentDate = new Date();
   const oneMonthLater = new Date(referenceDate);
@@ -153,12 +199,39 @@ const checkExamDate = async (req, res) => {
   return res.status(400).send({});
 };
 
+const adminPage = async (req, res) => {
+  const decoded = decodeToken(req.params.token)
+  const results = await sequelize.query(
+    `SELECT *
+      FROM user_tech_skills
+      INNER JOIN users ON user_tech_skills.user_id = users.id
+      INNER JOIN content ON user_tech_skills.content_id = content.id
+      WHERE users.company_id = :company_id`,
+    {
+      replacements: {
+        company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+  const parsed = results.map((res) => {
+    const date = new Date(res.created).toLocaleDateString('en-GB');
+    return {
+      ...res,
+      created: date,
+    }
+  })
+  return res.render("admin", { results: parsed });
+}
+
 module.exports = {
   resultsTech,
   answerResponse,
   contentPage,
   login,
+  loginAdmin,
   verifyToken,
   saveExamResult,
   checkExamDate,
+  adminPage,
 };

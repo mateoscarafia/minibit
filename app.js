@@ -10,10 +10,12 @@ const {
   resultsTech,
   answerResponse,
   contentPage,
+  adminPage,
   login,
+  loginAdmin,
   verifyToken,
   saveExamResult,
-  checkExamDate
+  checkExamDate,
 } = require("./controllers/controllers");
 
 const { loadGameData, gameStarter } = require("./utils/utils");
@@ -39,6 +41,7 @@ app.get("/", (req, res) => {
   res.render("login");
 });
 app.post("/login", login);
+app.post("/login-admin", loginAdmin);
 app.get("/intro", (req, res) => {
   res.render("intro");
 });
@@ -57,8 +60,9 @@ app.get("/results/:tech", resultsTech);
 app.post("/save-exam-result/:tech", saveExamResult);
 app.post("/check-exam-date", checkExamDate);
 app.get("/answer/:response", answerResponse);
-app.get("/content/:tech/:page", contentPage);
+app.get("/content/:content/:token", contentPage);
 app.get("/verify-token/:token", verifyToken);
+app.get("/admin/:token", adminPage);
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

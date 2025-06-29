@@ -106,7 +106,7 @@ CREATE TABLE `user_tech_skills` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_tech_skills_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,6 +115,7 @@ CREATE TABLE `user_tech_skills` (
 
 LOCK TABLES `user_tech_skills` WRITE;
 /*!40000 ALTER TABLE `user_tech_skills` DISABLE KEYS */;
+INSERT INTO `user_tech_skills` VALUES (5,1,0,'2025-06-28 22:07:52',1);
 /*!40000 ALTER TABLE `user_tech_skills` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,4 +156,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-27 10:13:13
+-- Dump completed on 2025-06-29 19:02:54
