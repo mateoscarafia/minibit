@@ -16,6 +16,7 @@ const {
   verifyToken,
   saveExamResult,
   checkExamDate,
+  createUser
 } = require("./controllers/controllers");
 
 const { loadGameData, gameStarter } = require("./utils/utils");
@@ -59,6 +60,7 @@ app.get("/get-game-data/:counter/:tech", (req, res) => {
 app.get("/results/:tech", resultsTech);
 app.post("/save-exam-result/:tech", saveExamResult);
 app.post("/check-exam-date", checkExamDate);
+app.post("/create-user", createUser);
 app.get("/answer/:response", answerResponse);
 app.get("/content/:content/:token", contentPage);
 app.get("/verify-token/:token", verifyToken);

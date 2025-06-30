@@ -169,6 +169,57 @@ const verifyToken = async (req, res) => {
   });
 };
 
+
+const createUser = async (req, res) => {
+  const decoded = decodeToken(req.headers.token)
+  const email = req.body.email;
+  const password = req.body.password;
+  try {
+    const [user] = await sequelize.query(
+      "INSERT INTO users (email, password, company_id) VALUES (:email, :password, :company_id)",
+      {
+        replacements: {
+          email: email,
+          password: password,
+          company_id: decoded.companyId,
+        },
+        type: sequelize.QueryTypes.INSERT,
+      }
+    );
+    return res.status(200).send({ user: user });
+  } catch (err) {
+    return res.status(500).send("Error");
+  }
+};
+
+const deleteUser = async (req, res) => {
+  const decoded = decodeToken(req.headers.token)
+  const userId = req.body.userId;
+  try {
+    await sequelize.query(
+      "DELETE FROM users WHERE id = :id and company_id = :company_id",
+      {
+        replacements: {
+          id: userId,
+          company_id: decoded.companyId,
+        }
+      }
+    );
+    await sequelize.query(
+      "DELETE FROM user_tech_skills WHERE user_id = :id",
+      {
+        replacements: {
+          id: userId,
+        }
+      }
+    );
+    return res.status(200).send({});
+  } catch (err) {
+    return res.status(500).send("Error");
+  }
+};
+
+
 const checkExamDate = async (req, res) => {
   const user = decodeToken(req.body.token)
   const [content] = await sequelize.query(
@@ -245,4 +296,5 @@ module.exports = {
   saveExamResult,
   checkExamDate,
   adminPage,
+  createUser
 };
