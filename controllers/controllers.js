@@ -221,7 +221,18 @@ const adminPage = async (req, res) => {
       created: date,
     }
   })
-  return res.render("admin", { results: parsed });
+  const users = await sequelize.query(
+    `SELECT *
+      FROM users
+      WHERE company_id = :company_id`,
+    {
+      replacements: {
+        company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+  return res.render("admin", { results: parsed, users: users });
 }
 
 module.exports = {
