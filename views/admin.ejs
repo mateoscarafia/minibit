@@ -109,6 +109,74 @@
       overflow-y: scroll;
     }
 
+    .content-container {
+      height: 700px;
+      width: 600px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .content-header {
+      width: 100%;
+      height: 100px;
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
+    .content-header-form {
+      margin-top: 10px;
+      width: 100%;
+      height: 40px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+
+      & span {
+        cursor: pointer;
+      }
+
+      & span:hover {
+        font-weight: bold;
+      }
+    }
+
+    .content-item {
+      width: 98%;
+      margin-left: 1%;
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+
+      & span {
+        width: 30%;
+      }
+
+      & span:last-child {
+        text-align: right;
+        cursor: pointer;
+      }
+
+      & span:last-child:hover {
+        font-weight: bold;
+      }
+    }
+
+    .content-item:hover {
+      background-color: #f1f1f1;
+    }
+
+    .content-items-container {
+      width: 100%;
+      height: 550px;
+      overflow-y: scroll;
+    }
+
     .exam-results-header {
       width: 100%;
       height: 80px;
@@ -166,7 +234,7 @@
       }
     }
 
-    input {
+    input[type="text"] {
       width: 150px;
       height: 30px;
       padding: 12px;
@@ -182,6 +250,7 @@
     <div class="lateral-menu">
       <div onclick="displayContainers('resultados')">Resutados</div>
       <div onclick="displayContainers('usuarios')">Usuarios</div>
+       <div onclick="displayContainers('contenido')">Contenido</div>
     </div>
     <div id="exam-results-id" class="exam-results">
       <div class="exam-results-header"></div>
@@ -230,15 +299,34 @@
           <% }); %>
       </div>
     </div>
+
+    <div id="content-container-id" class="content-container">
+      <div class="content-header">
+        <span>Crear contenido:</span>
+        <div class="content-header-form">
+          <input type="text" id="content-name" placeholder="Nombre" />
+          <input type="file" id="file-id" />
+          <span onclick="createContent()">+ Crear</span>
+        </div>
+      </div>
+      <div id="content-items-container-id" class="content-items-container">
+      </div>
+    </div>
   </div>
 </body>
 <script>
   const displayContainers = (container) => {
     document.getElementById("exam-results-id").style.display = "none"
     document.getElementById("users-container-id").style.display = "none"
+    document.getElementById("content-container-id").style.display = "none"
 
     if (container == "usuarios") document.getElementById("users-container-id").style.display = "block"
     if (container == "resultados") document.getElementById("exam-results-id").style.display = "block"
+     if (container == "contenido") document.getElementById("content-container-id").style.display = "block"
+  }
+
+  const createContent = () => {
+
   }
 
   const createUser = () => {
