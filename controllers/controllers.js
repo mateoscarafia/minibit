@@ -286,6 +286,41 @@ const adminPage = async (req, res) => {
   return res.render("admin", { results: parsed, users: users });
 }
 
+const createContent = async (req, res) => {
+  const decoded = decodeToken(req.headers.token)
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded or invalid file type' });
+  }
+
+  const [content] = await sequelize.query(
+    "INSERT INTO content (name, filename) VALUES (:name, :filename)",
+    {
+      replacements: {
+        name: req.body.contentName,
+        filename: req.file.filename,
+      },
+      type: sequelize.QueryTypes.INSERT,
+    }
+  );
+
+  const [company_content] = await sequelize.query(
+    "INSERT INTO company_content (company_id, content_id) VALUES (:company_id, :content_id)",
+    {
+      replacements: {
+        company_id: decoded.companyId,
+        content_id: content,
+      },
+      type: sequelize.QueryTypes.INSERT,
+    }
+  );
+
+  res.json({
+    content_id: content.id,
+    name: req.body.contentName,
+    filename: req.file.filename,
+  });
+}
+
 module.exports = {
   resultsTech,
   answerResponse,
@@ -296,5 +331,6 @@ module.exports = {
   saveExamResult,
   checkExamDate,
   adminPage,
-  createUser
+  createUser,
+  createContent
 };

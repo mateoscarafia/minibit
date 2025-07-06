@@ -52,7 +52,7 @@ CREATE TABLE `company_content` (
   `company_id` int NOT NULL,
   `content_id` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +61,7 @@ CREATE TABLE `company_content` (
 
 LOCK TABLES `company_content` WRITE;
 /*!40000 ALTER TABLE `company_content` DISABLE KEYS */;
-INSERT INTO `company_content` VALUES (1,1,1);
+INSERT INTO `company_content` VALUES (3,1,10);
 /*!40000 ALTER TABLE `company_content` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +77,7 @@ CREATE TABLE `content` (
   `name` varchar(255) NOT NULL,
   `filename` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,8 +86,37 @@ CREATE TABLE `content` (
 
 LOCK TABLES `content` WRITE;
 /*!40000 ALTER TABLE `content` DISABLE KEYS */;
-INSERT INTO `content` VALUES (1,'Javascript','javascript');
+INSERT INTO `content` VALUES (10,'rrttrd','8205411518.pdf');
 /*!40000 ALTER TABLE `content` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `questions`
+--
+
+DROP TABLE IF EXISTS `questions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `questions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `content_id` int NOT NULL,
+  `company_id` int NOT NULL,
+  `question_a` varchar(255) NOT NULL,
+  `question_b` varchar(255) NOT NULL,
+  `question_c` varchar(255) NOT NULL,
+  `question_d` varchar(255) NOT NULL,
+  `correct_answer` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `questions`
+--
+
+LOCK TABLES `questions` WRITE;
+/*!40000 ALTER TABLE `questions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `questions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -134,7 +163,7 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,7 +172,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'mateo@gmail.com','123456',1,'2025-06-16 11:25:43');
+INSERT INTO `users` VALUES (1,'mateo@gmail.com','123456',1,'2025-06-16 11:25:43'),(2,'0','0',0,'2025-06-30 15:29:52'),(4,'mateoscarafia@gmail.com','111111',1,'2025-06-30 15:33:12'),(6,'asasaaaa','22222222',1,'2025-06-30 15:35:17'),(7,'odododod','dfsdfsdf',1,'2025-06-30 18:55:09'),(8,'7d7d7d7d','sdasdfsdf',1,'2025-06-30 18:56:01');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -156,4 +185,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-29 19:02:54
+-- Dump completed on 2025-07-06 19:52:13

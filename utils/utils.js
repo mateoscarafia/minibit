@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const jwt = require("jsonwebtoken");
+const multer = require('multer');
 const secretKey =
   "ADFASDFADSGFSG478563453F25623945623BF985762349563G3B265234___";
 
@@ -52,6 +53,29 @@ const decodeToken = (token) => {
   });
 };
 
+const uploadDir = path.join(__dirname, '../public/content-files');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const randomName = Math.floor(1000000000 + Math.random() * 9000000000); // 10-digit number
+    cb(null, `${randomName}.pdf`);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'), false);
+    }
+  }
+});
+
 module.exports = {
   loadGameData,
   gameStarter,
@@ -59,4 +83,6 @@ module.exports = {
   secretKey,
   decodeToken,
   generateTokenAdmin,
+  storage,
+  upload
 };

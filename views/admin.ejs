@@ -250,7 +250,7 @@
     <div class="lateral-menu">
       <div onclick="displayContainers('resultados')">Resutados</div>
       <div onclick="displayContainers('usuarios')">Usuarios</div>
-       <div onclick="displayContainers('contenido')">Contenido</div>
+      <div onclick="displayContainers('contenido')">Contenido</div>
     </div>
     <div id="exam-results-id" class="exam-results">
       <div class="exam-results-header"></div>
@@ -322,10 +322,54 @@
 
     if (container == "usuarios") document.getElementById("users-container-id").style.display = "block"
     if (container == "resultados") document.getElementById("exam-results-id").style.display = "block"
-     if (container == "contenido") document.getElementById("content-container-id").style.display = "block"
+    if (container == "contenido") document.getElementById("content-container-id").style.display = "block"
   }
 
-  const createContent = () => {
+  const createContent = async () => {
+
+    const fileInput = document.getElementById('file-id');
+    const contentName = document.getElementById('content-name').value;
+    const file = fileInput.files[0];
+
+    // Check if a file was selected
+    if (!file) {
+      alert('Debe seleccionar un archivo');
+      return;
+    }
+
+    // Check if the file is a PDF
+    if (file.type !== 'application/pdf') {
+      alert('El archivo debe ser PDF');
+      return;
+    }
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append('pdfFile', file);
+    formData.append('contentName', contentName);
+
+    try {
+      // Send the file to the server
+      const response = await fetch('/create-content', {
+        method: 'POST',
+        headers: {
+          token: localStorage.getItem("minibit-token"),
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Upload successful:', result);
+        alert('File uploaded successfully!');
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Error uploading file');
+    }
+
 
   }
 

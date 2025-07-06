@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const WebSocket = require("ws");
 const bodyParser = require("body-parser");
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,15 +17,19 @@ const {
   verifyToken,
   saveExamResult,
   checkExamDate,
-  createUser
+  createUser,
+  createContent
 } = require("./controllers/controllers");
 
-const { loadGameData, gameStarter } = require("./utils/utils");
+const { loadGameData, gameStarter, upload } = require("./utils/utils");
 
 // Configuración del motor de plantillas
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
+// Middleware setup
+app.use(cors());
+app.use(express.json());
 
 // Middleware for parsing JSON and URL-encoded data
 app.use(bodyParser.json()); // for parsing application/json
@@ -65,6 +70,17 @@ app.get("/answer/:response", answerResponse);
 app.get("/content/:content/:token", contentPage);
 app.get("/verify-token/:token", verifyToken);
 app.get("/admin/:token", adminPage);
+
+////////////
+
+app.post('/create-content', upload.single('pdfFile'), createContent);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message });
+});
+
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
