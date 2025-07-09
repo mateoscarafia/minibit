@@ -283,7 +283,19 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  return res.render("admin", { results: parsed, users: users });
+  const content = await sequelize.query(
+    `SELECT *
+      FROM content
+      INNER JOIN company_content ON content.id = company_content.content_id
+      WHERE company_content.company_id = :company_id`,
+    {
+      replacements: {
+        company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+  return res.render("admin", { results: parsed, users: users, content: content });
 }
 
 const createContent = async (req, res) => {

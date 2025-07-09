@@ -101,10 +101,11 @@ CREATE TABLE `questions` (
   `id` int NOT NULL AUTO_INCREMENT,
   `content_id` int NOT NULL,
   `company_id` int NOT NULL,
-  `question_a` varchar(255) NOT NULL,
-  `question_b` varchar(255) NOT NULL,
-  `question_c` varchar(255) NOT NULL,
-  `question_d` varchar(255) NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `answer_a` varchar(255) NOT NULL,
+  `answer_b` varchar(255) NOT NULL,
+  `answer_c` varchar(255) NOT NULL,
+  `answer_d` varchar(255) NOT NULL,
   `correct_answer` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -185,4 +186,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-06 19:52:13
+-- Dump completed on 2025-07-09  9:58:43
