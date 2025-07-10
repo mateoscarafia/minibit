@@ -333,6 +333,35 @@ const createContent = async (req, res) => {
   });
 }
 
+const postQuestions = async (req, res) => {
+  console.log(req.body.payload)
+  req.body.payload.forEach((q) => {
+
+    sequelize.query(
+      `INSERT INTO questions 
+    (content_id,company_id, question, answer_a, answer_b, answer_c, answer_d, correct_answer ) 
+    VALUES (:content_id, :company_id, :question, :answer_a, :answer_b, :answer_c, :answer_d, :correct_answer)`,
+      {
+        replacements: {
+          content_id: 1,
+          company_id: 1,
+          question: q.question,
+          answer_a: q.answer_a,
+          answer_b: q.answer_b,
+          answer_c: q.answer_c,
+          answer_d: q.answer_d,
+          correct_answer: q.correct_answer,
+        },
+        type: sequelize.QueryTypes.INSERT,
+      }
+    );
+
+  })
+
+  return res.json({});
+
+}
+
 module.exports = {
   resultsTech,
   answerResponse,
@@ -344,5 +373,6 @@ module.exports = {
   checkExamDate,
   adminPage,
   createUser,
-  createContent
+  createContent,
+  postQuestions,
 };
