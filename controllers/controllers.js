@@ -200,7 +200,7 @@ const deleteUser = async (req, res) => {
       "DELETE FROM users WHERE id = :id and company_id = :company_id",
       {
         replacements: {
-          id: userId,
+          id: Number(userId),
           company_id: decoded.companyId,
         }
       }
@@ -209,7 +209,7 @@ const deleteUser = async (req, res) => {
       "DELETE FROM user_tech_skills WHERE user_id = :id",
       {
         replacements: {
-          id: userId,
+          id: Number(userId),
         }
       }
     );
@@ -283,10 +283,12 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
+  console.log(decoded.companyId)
   const content = await sequelize.query(
-    `SELECT *
+    `SELECT content.name, questions.*
       FROM content
       INNER JOIN company_content ON content.id = company_content.content_id
+      INNER JOIN questions ON content.id = questions.content_id
       WHERE company_content.company_id = :company_id`,
     {
       replacements: {
@@ -295,6 +297,7 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
+  console.log(content)
   return res.render("admin", { results: parsed, users: users, content: content });
 }
 
@@ -334,7 +337,7 @@ const createContent = async (req, res) => {
 }
 
 const postQuestions = async (req, res) => {
-  console.log(req.body.payload)
+  const decoded = decodeToken(req.headers.token)
   req.body.payload.forEach((q) => {
 
     sequelize.query(
@@ -343,8 +346,8 @@ const postQuestions = async (req, res) => {
     VALUES (:content_id, :company_id, :question, :answer_a, :answer_b, :answer_c, :answer_d, :correct_answer)`,
       {
         replacements: {
-          content_id: 1,
-          company_id: 1,
+          content_id: req.body.contentId,
+          company_id: decoded.companyId,
           question: q.question,
           answer_a: q.answer_a,
           answer_b: q.answer_b,
@@ -375,4 +378,5 @@ module.exports = {
   createUser,
   createContent,
   postQuestions,
+  deleteUser,
 };

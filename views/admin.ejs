@@ -425,7 +425,7 @@
             <span>
               Contraseña: <%= user.password %>
             </span>
-            <span>Eliminar</span>
+            <span onclick="deleteUser('<%= user.id %>')">Eliminar</span>
           </div>
           <% }); %>
       </div>
@@ -447,13 +447,13 @@
     <div id="tests-container-id" class="tests-container">
       <div id="tests-items-container-id" class="tests-items-container">
         <% content.forEach((con)=> { %>
-          <div onclick="openQuestionModal()" class="tests-item">
+          <div onclick="openQuestionModal('<%= con.id %>')" class="tests-item">
             <span><b>
                 <%= con.name %>
               </b>
             </span>
             <span><b>
-                <%= con.name %>
+                Hola
               </b>
             </span>
           </div>
@@ -508,7 +508,9 @@
   </div>
 </body>
 <script>
-  const postQuestions = async () => {
+  var contentId = null;
+  var content = "";
+  const postQuestions = async (id) => {
     const payload = [1, 2].map((i, index) => {
       return {
         question: document.getElementById(`question_${i}_id`).value,
@@ -516,11 +518,9 @@
         answer_b: document.getElementById(`answer_${i}_b_id`).value,
         answer_c: document.getElementById(`answer_${i}_c_id`).value,
         answer_d: document.getElementById(`answer_${i}_d_id`).value,
-        correct_answer: document.getElementById(`answer_${i}_d_id`).value,
+        correct_answer: document.getElementById(`correct_answer_${i}_id`).value,
       }
     })
-
-    console.log(payload)
 
     const response = await fetch('/post-questions', {
       method: 'POST',
@@ -529,12 +529,33 @@
         token: localStorage.getItem("minibit-token"),
       },
       body: JSON.stringify({
+        contentId: contentId,
         payload: payload
       })
     });
 
   }
-  const openQuestionModal = () => {
+
+  const deleteUser = async (id) => {
+    const response = await fetch('/delete-user', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("minibit-token"),
+      },
+      body: JSON.stringify({
+        userId: id,
+      })
+    }).then(() => {
+      alert("Usuario eliminado.")
+    });
+  }
+
+  const openQuestionModal = (id) => {
+    contentId = id;
+    content.forEach((item) => {
+      console.log(item.name)
+    })
     document.getElementById("tests-container-id-form").style.display = "block"
   }
 
