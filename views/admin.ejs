@@ -20,7 +20,6 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: url("/images/background.jpg") no-repeat center center fixed;
       background-size: cover;
       overflow: hidden;
     }
@@ -508,8 +507,11 @@
   </div>
 </body>
 <script>
+  document.body.style.background = 'url("/images/<%= background_image %>") no-repeat center center fixed';
+  document.body.style.backgroundSize = 'cover'; // Ensures full coverage
   var contentId = null;
-  var content = "";
+  var content = <%- JSON.stringify(content) %>;
+
   const postQuestions = async (id) => {
     const payload = [1, 2].map((i, index) => {
       return {
@@ -673,6 +675,7 @@
       alert("Lo sentimos, algo falló.");
     });
   }
+
 </script>
 
 </html>

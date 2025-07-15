@@ -71,7 +71,7 @@ app.post("/post-questions", postQuestions);
 app.post("/create-user", createUser);
 app.post("/delete-user", deleteUser);
 app.get("/answer/:response", answerResponse);
-app.get("/content/:content/:token", contentPage);
+app.get("/content/:token", contentPage);
 app.get("/verify-token/:token", verifyToken);
 app.get("/admin/:token", adminPage);
 

@@ -134,7 +134,7 @@
 
         const data = await response.json();
         localStorage.setItem("minibit-token", data.token);
-        window.location.href = "/content/javascript/" + data.token;
+        window.location.href = "/content/" + data.token;
       } catch (error) {
         alert("Lo sentimos, algo falló.");
       }

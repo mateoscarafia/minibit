@@ -121,6 +121,7 @@
     }
 
     .menu-item {
+      color: #000;
       padding: 10px;
       border-radius: 4px;
       margin-bottom: 5px;
@@ -180,6 +181,15 @@
     }
   </style>
   <script>
+    var techs = <%- JSON.stringify(techs) %>;
+
+
+    setTimeout(() => {
+      console.log(techs)
+      document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + techs[0].name
+    }, 100)
+
+
     async function testAuth() {
       const response = await fetch(
         `${window.location.protocol}//${window.location.host
@@ -223,11 +233,11 @@
       return url.includes(tech) && "active"
     }
 
-    setTimeout(() => {
-      document.getElementById("take-test-button-id").innerHTML =
-        "Evaluacion " + defineTech();
-      testAuth();
-    }, 500);
+    const setTechContent = (file, name) => {
+      const frame = document.getElementById("pdf-file-frame")
+      frame.src = `${window.location.protocol}//${window.location.host}/content-files/${file}`
+      document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + name
+    }
   </script>
 </head>
 
@@ -238,15 +248,15 @@
     </div>
     <ul class="menu-items">
       <% techs.forEach((tech)=> { %>
-        <li onclick="navigateTo('/content/<%= tech.filename %>/' + localStorage.getItem('minibit-token'))"
-          class="menu-item" id="menu-item-<%= tech.filename %>">
+        <li onclick="setTechContent('<%= tech.filename %>', '<%= tech.name %>')" class="menu-item"
+          id="menu-item-<%= tech.filename %>">
           <%= tech.name %>
         </li>
         <% }); %>
     </ul>
     <button onclick="takeTest()" class="take-test-button" id="take-test-button-id"></button>
   </nav>
-  <main class="markdown-container"><%- content %></main>
+  <embed class="markdown-container" id="pdf-file-frame" src="" type="application/pdf">
 </body>
 
 </html>

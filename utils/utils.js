@@ -76,6 +76,27 @@ const upload = multer({
   }
 });
 
+const transformQuestions = (questions) => {
+  // Group questions by content_id
+  const grouped = questions.reduce((acc, question) => {
+    const { content_id, name, ...rest } = question;
+
+    if (!acc[content_id]) {
+      acc[content_id] = {
+        content_id,
+        name,
+        answers: []
+      };
+    }
+
+    acc[content_id].answers.push(rest);
+    return acc;
+  }, {});
+
+  // Convert the grouped object into an array
+  return Object.values(grouped);
+}
+
 module.exports = {
   loadGameData,
   gameStarter,
@@ -84,5 +105,6 @@ module.exports = {
   decodeToken,
   generateTokenAdmin,
   storage,
-  upload
+  upload,
+  transformQuestions
 };

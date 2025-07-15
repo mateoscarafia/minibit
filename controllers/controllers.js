@@ -3,7 +3,7 @@ const md = new MarkdownIt();
 const fs = require("fs");
 const path = require("path");
 const { sequelize } = require("../utils/database");
-const { generateToken, secretKey, decodeToken, generateTokenAdmin } = require("../utils/utils");
+const { generateToken, secretKey, decodeToken, generateTokenAdmin, transformQuestions } = require("../utils/utils");
 const jwt = require("jsonwebtoken");
 
 const resultsTech = (req, res) => {
@@ -92,7 +92,6 @@ const answerResponse = (req, res) => {
 };
 
 const contentPage = async (req, res) => {
-  const content = req.params.content;
   const token = req.params.token;
   const decoded = decodeToken(token)
   const techs = await sequelize.query(
@@ -106,16 +105,7 @@ const contentPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  try {
-    const markdownContent = fs.readFileSync(
-      path.join(__dirname, `../content`, `${content}.md`),
-      "utf8"
-    );
-    const htmlContent = md.render(markdownContent);
-    res.render("tech_content", { content: htmlContent, techs: techs });
-  } catch (error) {
-    res.status(500).send("Error al cargar el documento markdown");
-  }
+  res.render("tech_content", { techs: techs });
 };
 
 const login = async (req, res) => {
@@ -252,6 +242,8 @@ const checkExamDate = async (req, res) => {
 
 const adminPage = async (req, res) => {
   const decoded = decodeToken(req.params.token)
+  if (!decoded) return res.render("login")
+
   const results = await sequelize.query(
     `SELECT *
       FROM user_tech_skills
@@ -283,7 +275,6 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  console.log(decoded.companyId)
   const content = await sequelize.query(
     `SELECT content.name, questions.*
       FROM content
@@ -297,8 +288,18 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  console.log(content)
-  return res.render("admin", { results: parsed, users: users, content: content });
+  const [{ background_image }] = await sequelize.query(
+    `SELECT background_image from company
+      WHERE id = :company_id`,
+    {
+      replacements: {
+        company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  return res.render("admin", { results: parsed, users: users, content: transformQuestions(content), background_image: background_image });
 }
 
 const createContent = async (req, res) => {
