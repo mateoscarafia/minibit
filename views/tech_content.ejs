@@ -180,7 +180,29 @@
       width: 27%;
     }
   </style>
-  <script>
+</head>
+
+<body>
+  <nav class="menu-vertical">
+    <div class="menu-header">
+      <img id="logo-img" width="150px" src="http://localhost:3000/images/logo.png" style="border-radius: 10px" />
+    </div>
+    <ul class="menu-items">
+      <% techs.forEach((tech)=> { %>
+        <li onclick="setTechContent('<%= tech.filename %>', '<%= tech.name %>')" class="menu-item"
+          id="menu-item-<%= tech.filename %>">
+          <%= tech.name %>
+        </li>
+        <% }); %>
+    </ul>
+    <button onclick="takeTest()" class="take-test-button" id="take-test-button-id"></button>
+  </nav>
+  <embed class="markdown-container" id="pdf-file-frame" src="" type="application/pdf">
+</body>
+
+<script>
+    document.body.style.background = 'url("/images/<%= background_image %>") no-repeat center center fixed';
+    document.body.style.backgroundSize = 'cover'; // Ensures full coverage
     var techs = <%- JSON.stringify(techs) %>;
 
 
@@ -239,24 +261,5 @@
       document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + name
     }
   </script>
-</head>
-
-<body>
-  <nav class="menu-vertical">
-    <div class="menu-header">
-      <img id="logo-img" width="150px" src="http://localhost:3000/images/logo.png" style="border-radius: 10px" />
-    </div>
-    <ul class="menu-items">
-      <% techs.forEach((tech)=> { %>
-        <li onclick="setTechContent('<%= tech.filename %>', '<%= tech.name %>')" class="menu-item"
-          id="menu-item-<%= tech.filename %>">
-          <%= tech.name %>
-        </li>
-        <% }); %>
-    </ul>
-    <button onclick="takeTest()" class="take-test-button" id="take-test-button-id"></button>
-  </nav>
-  <embed class="markdown-container" id="pdf-file-frame" src="" type="application/pdf">
-</body>
 
 </html>

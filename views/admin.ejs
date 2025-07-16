@@ -511,6 +511,26 @@
   document.body.style.backgroundSize = 'cover'; // Ensures full coverage
   var contentId = null;
   var content = <%- JSON.stringify(content) %>;
+  var content_techs = <%- JSON.stringify(content_techs) %>;
+
+  const showContent = () => {
+    const contentContainer = document.getElementById("content-items-container-id")
+    contentContainer.innerHTML = "";
+    content_techs.forEach((tech) => {
+      contentContainer.innerHTML += `<div class="content-item">
+            <span><b>
+                ${tech.name}
+              </b>
+            </span>
+            <a target="_blank" href="${window.location.protocol}//${window.location.host}/content-files/${tech.filename}">pdf</a>
+           <span>Eliminar</span>
+          </div>`
+    })
+  }
+
+  setTimeout(() => {
+    showContent()
+  }, 100)
 
   const postQuestions = async (id) => {
     const payload = [1, 2].map((i, index) => {
@@ -615,6 +635,8 @@
         const result = await response.json();
         console.log('Upload successful:', result);
         alert('File uploaded successfully!');
+        content_techs.push({ name: result.name, filename: result.filename })
+        showContent()
       } else {
         throw new Error('Upload failed');
       }

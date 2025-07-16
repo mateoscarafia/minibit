@@ -105,7 +105,17 @@ const contentPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  res.render("tech_content", { techs: techs });
+  const [{ background_image }] = await sequelize.query(
+    `SELECT background_image from company
+      WHERE id = :company_id`,
+    {
+      replacements: {
+        company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+  res.render("tech_content", { techs: techs, background_image: background_image });
 };
 
 const login = async (req, res) => {
@@ -288,6 +298,18 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
+  const content_techs = await sequelize.query(
+    `SELECT *
+      FROM content
+      INNER JOIN company_content ON content.id = company_content.content_id
+      WHERE company_content.company_id = :company_id`,
+    {
+      replacements: {
+        company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
   const [{ background_image }] = await sequelize.query(
     `SELECT background_image from company
       WHERE id = :company_id`,
@@ -299,7 +321,7 @@ const adminPage = async (req, res) => {
     }
   );
 
-  return res.render("admin", { results: parsed, users: users, content: transformQuestions(content), background_image: background_image });
+  return res.render("admin", { results: parsed, users: users, content: transformQuestions(content), background_image: background_image, content_techs: content_techs });
 }
 
 const createContent = async (req, res) => {
