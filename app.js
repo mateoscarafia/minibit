@@ -20,7 +20,8 @@ const {
   createUser,
   createContent,
   postQuestions,
-  deleteUser
+  deleteUser,
+  deleteContent
 } = require("./controllers/controllers");
 
 const { loadGameData, gameStarter, upload } = require("./utils/utils");
@@ -74,6 +75,7 @@ app.get("/answer/:response", answerResponse);
 app.get("/content/:token", contentPage);
 app.get("/verify-token/:token", verifyToken);
 app.get("/admin/:token", adminPage);
+app.post("/delete-content", deleteContent);
 
 ////////////
 

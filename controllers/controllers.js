@@ -351,9 +351,8 @@ const createContent = async (req, res) => {
       type: sequelize.QueryTypes.INSERT,
     }
   );
-
-  res.json({
-    content_id: content.id,
+  return res.json({
+    id: content,
     name: req.body.contentName,
     filename: req.file.filename,
   });
@@ -388,6 +387,74 @@ const postQuestions = async (req, res) => {
 
 }
 
+const deleteContent = (req, res) => {
+  const decoded = decodeToken(req.headers.token)
+
+  sequelize.query(
+    `DELETE from company_content Where company_id=:company_id and content_id=:content_id`,
+    {
+      replacements: {
+        content_id: req.body.contentId,
+        company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.DELETE,
+    }
+  ).then(async () => {
+
+    const [{ filename }] = await sequelize.query(
+      `SELECT filename from content Where id=:content_id`,
+      {
+        replacements: {
+          content_id: req.body.contentId,
+        },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    )
+
+    const filePath = path.join(__dirname, '../public/content-files/' + filename);
+
+    fs.unlink(filePath, (err) => {
+      if (err) console.log(err)
+      console.log('File deleted successfully');
+    });
+
+    sequelize.query(
+      `DELETE from content Where id=:content_id`,
+      {
+        replacements: {
+          content_id: req.body.contentId,
+        },
+        type: sequelize.QueryTypes.DELETE,
+      }
+    )
+
+    sequelize.query(
+      `DELETE from questions Where content_id=:content_id`,
+      {
+        replacements: {
+          content_id: req.body.contentId,
+        },
+        type: sequelize.QueryTypes.DELETE,
+      }
+    )
+
+    sequelize.query(
+      `DELETE from user_tech_skills Where content_id=:content_id`,
+      {
+        replacements: {
+          content_id: req.body.contentId,
+        },
+        type: sequelize.QueryTypes.DELETE,
+      }
+    )
+
+    return res.json({});
+
+  }).catch(() => {
+    return res.status(500).json({});
+  })
+}
+
 module.exports = {
   resultsTech,
   answerResponse,
@@ -402,4 +469,5 @@ module.exports = {
   createContent,
   postQuestions,
   deleteUser,
+  deleteContent,
 };
