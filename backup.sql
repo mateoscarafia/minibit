@@ -26,6 +26,7 @@ CREATE TABLE `company` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `pass_phrase` varchar(255) NOT NULL,
+  `background_image` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -36,7 +37,7 @@ CREATE TABLE `company` (
 
 LOCK TABLES `company` WRITE;
 /*!40000 ALTER TABLE `company` DISABLE KEYS */;
-INSERT INTO `company` VALUES (1,'ACID LABS','acid_labs_passphrase');
+INSERT INTO `company` VALUES (1,'ACID LABS','acid_labs_passphrase','acid_labs.jpg');
 /*!40000 ALTER TABLE `company` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -52,7 +53,7 @@ CREATE TABLE `company_content` (
   `company_id` int NOT NULL,
   `content_id` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +62,6 @@ CREATE TABLE `company_content` (
 
 LOCK TABLES `company_content` WRITE;
 /*!40000 ALTER TABLE `company_content` DISABLE KEYS */;
-INSERT INTO `company_content` VALUES (3,1,10);
 /*!40000 ALTER TABLE `company_content` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +77,7 @@ CREATE TABLE `content` (
   `name` varchar(255) NOT NULL,
   `filename` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +86,6 @@ CREATE TABLE `content` (
 
 LOCK TABLES `content` WRITE;
 /*!40000 ALTER TABLE `content` DISABLE KEYS */;
-INSERT INTO `content` VALUES (10,'rrttrd','8205411518.pdf');
 /*!40000 ALTER TABLE `content` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +107,7 @@ CREATE TABLE `questions` (
   `answer_d` varchar(255) NOT NULL,
   `correct_answer` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,7 +116,6 @@ CREATE TABLE `questions` (
 
 LOCK TABLES `questions` WRITE;
 /*!40000 ALTER TABLE `questions` DISABLE KEYS */;
-INSERT INTO `questions` VALUES (1,1,1,'','','','','',''),(2,1,1,'','','','','',''),(3,1,1,'aaaaa','a','b','c','d','d'),(4,1,1,'','','','','','');
 /*!40000 ALTER TABLE `questions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -135,8 +133,7 @@ CREATE TABLE `user_tech_skills` (
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `content_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `user_tech_skills_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -146,7 +143,6 @@ CREATE TABLE `user_tech_skills` (
 
 LOCK TABLES `user_tech_skills` WRITE;
 /*!40000 ALTER TABLE `user_tech_skills` DISABLE KEYS */;
-INSERT INTO `user_tech_skills` VALUES (5,1,0,'2025-06-28 22:07:52',1);
 /*!40000 ALTER TABLE `user_tech_skills` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,7 +161,7 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +170,6 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'mateo@gmail.com','123456',1,'2025-06-16 11:25:43'),(2,'0','0',0,'2025-06-30 15:29:52'),(4,'mateoscarafia@gmail.com','111111',1,'2025-06-30 15:33:12'),(6,'asasaaaa','22222222',1,'2025-06-30 15:35:17'),(7,'odododod','dfsdfsdf',1,'2025-06-30 18:55:09'),(8,'7d7d7d7d','sdasdfsdf',1,'2025-06-30 18:56:01');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -187,4 +182,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-10 20:23:36
+-- Dump completed on 2025-07-17 16:33:35
