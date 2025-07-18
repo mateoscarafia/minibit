@@ -310,6 +310,9 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
+
+
+  
   const [{ background_image }] = await sequelize.query(
     `SELECT background_image from company
       WHERE id = :company_id`,
@@ -321,7 +324,7 @@ const adminPage = async (req, res) => {
     }
   );
 
-  return res.render("admin", { results: parsed, users: users, content: transformQuestions(content), background_image: background_image, content_techs: content_techs });
+  return res.render("admin", { results: parsed, users: users, content: content, background_image: background_image, content_techs: content_techs });
 }
 
 const createContent = async (req, res) => {

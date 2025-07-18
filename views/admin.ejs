@@ -322,13 +322,13 @@
 
     .tests-container-form {
       display: none;
-      width: 80%;
-      left: 10%;
-      padding: 5%;
+      width: 30%;
+      left: 35%;
       height: 80vh;
       border: 1px solid #ddd;
       border-radius: 4px;
       position: absolute;
+      border-radius: 20px;
       top: 10vh;
       z-index: 10;
       background-color: white;
@@ -343,6 +343,16 @@
       }
     }
 
+    .tests-container-form::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .tests-container-form {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+
     .answer-block-container {
       width: 100%;
       display: flex;
@@ -351,9 +361,9 @@
     }
 
     .answer-block {
-      width: 40%;
-      height: 400px;
-      padding: 20px;
+      width: 100%;
+      height: 350px;
+      padding: 45px;
     }
 
     .answer-input {
@@ -434,7 +444,7 @@
 
     <div id="tests-container-id" class="tests-container">
       <div id="tests-items-container-id" class="tests-items-container">
-        <% content.forEach((con)=> { %>
+        <% content_techs.forEach((con)=> { %>
           <div onclick="openQuestionModal('<%= con.id %>')" class="tests-item">
             <span><b>
                 <%= con.name %>
@@ -451,44 +461,6 @@
 
     <div id="tests-container-id-form" class="tests-container-form">
       <span onclick="closeQuestionModal()" class="close-cross">x</span>
-      <div class="answer-block-container">
-        <div class="answer-block">
-          <p>Pregunta 1</p><br />
-          <textarea id="question_1_id" placeholder="Escriba pregunta"></textarea><br />
-          <span>A</span><input id="answer_1_a_id" type="text" class="answer-input" id="content-name"
-            placeholder="Respuesta A" /><br />
-          <span>B</span><input id="answer_1_b_id" type="text" class="answer-input" id="content-name"
-            placeholder="Respuesta B" /><br />
-          <span>C</span><input id="answer_1_c_id" type="text" class="answer-input" id="content-name"
-            placeholder="Respuesta C" /><br />
-          <span>D</span><input id="answer_1_d_id" type="text" class="answer-input" id="content-name"
-            placeholder="Respuesta D" /><br />
-          <select id="correct_answer_1_id">
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-          </select>
-        </div>
-        <div class="answer-block">
-          <p>Pregunta 2</p><br />
-          <textarea id="question_2_id" placeholder="Escriba pregunta"></textarea><br />
-          <span>A</span><input id="answer_2_a_id" type="text" class="answer-input" id="content-name"
-            placeholder="Respuesta A" /><br />
-          <span>B</span><input id="answer_2_b_id" type="text" class="answer-input" id="content-name"
-            placeholder="Respuesta B" /><br />
-          <span>C</span><input id="answer_2_c_id" type="text" class="answer-input" id="content-name"
-            placeholder="Respuesta C" /><br />
-          <span>D</span><input id="answer_2_d_id" type="text" class="answer-input" id="content-name"
-            placeholder="Respuesta D" /><br />
-          <select id="correct_answer_2_id">
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-          </select>
-        </div>
-      </div>
       <button onclick="postQuestions()">Enviar</button>
     </div>
 
@@ -535,9 +507,36 @@
     })
   }
 
+  const displayQuestionForm = () => {
+    const testContainer = document.getElementById("tests-container-id-form");
+    [...Array(50).keys()].forEach((item, index) => {
+      index = index + 1
+      testContainer.innerHTML += `
+        <div class="answer-block">
+          <p>Pregunta ${index}</p><br />
+          <textarea id="question_${index}_id" placeholder="Escriba pregunta"></textarea><br />
+          <span>A</span><input id="answer_${index}_a_id" type="text" class="answer-input" id="content-name"
+            placeholder="Respuesta A" /><br />
+          <span>B</span><input id="answer_${index}_b_id" type="text" class="answer-input" id="content-name"
+            placeholder="Respuesta B" /><br />
+          <span>C</span><input id="answer_${index}_c_id" type="text" class="answer-input" id="content-name"
+            placeholder="Respuesta C" /><br />
+          <span>D</span><input id="answer_${index}_d_id" type="text" class="answer-input" id="content-name"
+            placeholder="Respuesta D" /><br />
+          <select id="correct_answer_${index}_id">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+        </div>`
+    })
+  }
+
   setTimeout(() => {
     showContent()
     showUsers()
+    displayQuestionForm()
   }, 100)
 
   const postQuestions = async (id) => {
@@ -551,7 +550,6 @@
         correct_answer: document.getElementById(`correct_answer_${i}_id`).value,
       }
     })
-
     const response = await fetch('/post-questions', {
       method: 'POST',
       headers: {
@@ -563,7 +561,6 @@
         payload: payload
       })
     });
-
   }
 
   const deleteUser = async (id) => {
