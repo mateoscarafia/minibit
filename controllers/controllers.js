@@ -285,19 +285,7 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  const content = await sequelize.query(
-    `SELECT content.name, questions.*
-      FROM content
-      INNER JOIN company_content ON content.id = company_content.content_id
-      INNER JOIN questions ON content.id = questions.content_id
-      WHERE company_content.company_id = :company_id`,
-    {
-      replacements: {
-        company_id: decoded.companyId,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    }
-  );
+
   const content_techs = await sequelize.query(
     `SELECT *
       FROM content
@@ -311,8 +299,31 @@ const adminPage = async (req, res) => {
     }
   );
 
+  const content_question = [];
 
-  
+  content_techs.forEach(async (content, index) => {
+    content_question.push(
+      {
+        name: content_techs[index].name,
+        id: content_techs[index].id,
+        questions: await sequelize.query(
+          `SELECT *
+      FROM questions
+      WHERE company_id = :company_id AND content_id= :content_id`,
+          {
+            replacements: {
+              company_id: decoded.companyId,
+              content_id: content_techs[index].id,
+            },
+            type: sequelize.QueryTypes.SELECT,
+          }
+        )
+      }
+    )
+  })
+
+
+
   const [{ background_image }] = await sequelize.query(
     `SELECT background_image from company
       WHERE id = :company_id`,
@@ -324,7 +335,9 @@ const adminPage = async (req, res) => {
     }
   );
 
-  return res.render("admin", { results: parsed, users: users, content: content, background_image: background_image, content_techs: content_techs });
+  console.log(content_question)
+
+  return res.render("admin", { results: parsed, users: users, content_question: content_question, background_image: background_image, content_techs: content_techs });
 }
 
 const createContent = async (req, res) => {
@@ -364,26 +377,54 @@ const createContent = async (req, res) => {
 const postQuestions = async (req, res) => {
   const decoded = decodeToken(req.headers.token)
   req.body.payload.forEach((q) => {
-
-    sequelize.query(
-      `INSERT INTO questions 
+    if (q.id) {
+      sequelize.query(
+        `UPDATE questions 
+            SET 
+              content_id = :content_id,
+              company_id = :company_id,
+              question = :question,
+              answer_a = :answer_a,
+              answer_b = :answer_b,
+              answer_c = :answer_c,
+              answer_d = :answer_d,
+              correct_answer = :correct_answer
+            WHERE id = :id`,
+        {
+          replacements: {
+            id: q.id,
+            content_id: req.body.contentId,
+            company_id: decoded.companyId,
+            question: q.question,
+            answer_a: q.answer_a,
+            answer_b: q.answer_b,
+            answer_c: q.answer_c,
+            answer_d: q.answer_d,
+            correct_answer: q.correct_answer,
+          },
+          type: sequelize.QueryTypes.UPDATE,
+        }
+      );
+    } else {
+      sequelize.query(
+        `INSERT INTO questions 
     (content_id,company_id, question, answer_a, answer_b, answer_c, answer_d, correct_answer ) 
     VALUES (:content_id, :company_id, :question, :answer_a, :answer_b, :answer_c, :answer_d, :correct_answer)`,
-      {
-        replacements: {
-          content_id: req.body.contentId,
-          company_id: decoded.companyId,
-          question: q.question,
-          answer_a: q.answer_a,
-          answer_b: q.answer_b,
-          answer_c: q.answer_c,
-          answer_d: q.answer_d,
-          correct_answer: q.correct_answer,
-        },
-        type: sequelize.QueryTypes.INSERT,
-      }
-    );
-
+        {
+          replacements: {
+            content_id: req.body.contentId,
+            company_id: decoded.companyId,
+            question: q.question,
+            answer_a: q.answer_a,
+            answer_b: q.answer_b,
+            answer_c: q.answer_c,
+            answer_d: q.answer_d,
+            correct_answer: q.correct_answer,
+          },
+          type: sequelize.QueryTypes.INSERT,
+        }
+      );
+    }
   })
 
   return res.json({});
