@@ -23,8 +23,6 @@ body {
   align-items: center;
   min-height: 100vh;
   line-height: 1.6;
-  background: url("/images/background.jpg") no-repeat center center fixed;
-  background-size: cover;
 }
 
 .game-container {
@@ -138,7 +136,7 @@ body {
 
 #counter {
   position: absolute;
-  bottom: -130px;
+  bottom: 100px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 30px;

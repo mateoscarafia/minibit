@@ -53,19 +53,6 @@ const fetchAnswers = () => {
   }
 };
 
-//FETCH IF START IS TRUE
-const fetchCheckStart = (ans) => {
-  localStorage.setItem("minibit-answers", JSON.stringify([]));
-  /* const url = new URL(window.location.href);
-  fetch(`${url.origin}/check-start`).then(async (res) => {
-    const resp = await res.json();
-    if (!resp.start) {
-      const url = new URL(window.location.href);
-      window.location.href = `${url.origin}/start`;
-    }
-  });*/
-};
-
 function defineTech() {
   return window.location.pathname.split("/")[2]
 }
@@ -134,5 +121,3 @@ gameInterval = setInterval(() => {
   }
 }, 1000);
 
-//CHECK START GAME TRUE
-fetchCheckStart();

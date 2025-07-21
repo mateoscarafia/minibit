@@ -21,44 +21,136 @@ const resultsTech = (req, res) => {
 };
 
 const saveExamResult = async (req, res) => {
-  let finalResult = 0
+
   try {
-    const userAnswers = req.body.userAnswers
-    const decodedToken = decodeToken(req.headers.token);
-    const rightAnswers = [];
-    const rawDataQuestions = JSON.parse(
-      fs.readFileSync(path.join(__dirname, "../exams", req.params.tech + ".json"))
-    );
-    for (let key in rawDataQuestions) {
-      rightAnswers.push(rawDataQuestions[`${key}`].answer);
-    }
-    const userCorrectAnswers = userAnswers.filter((item) =>
-      rightAnswers.includes(item)
-    ).length;
-    finalResult = (userCorrectAnswers * 100) / rightAnswers.length;
-    const [content] = await sequelize.query(
-      "SELECT id FROM content WHERE filename = :filename",
+    const decoded = decodeToken(req.headers.token)
+    const userAnswers = req.body.userAnswers;
+    const contentId = req.body.contentId;
+    var questions_answered_ok = 0;
+
+    const [results] = await sequelize.query(
+      "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND content_id = :content_id AND safety_save IS NULL ORDER BY id DESC LIMIT 1",
       {
         replacements: {
-          filename: req.params.tech,
+          user_id: decoded.userId,
+          content_id: contentId,
         },
         type: sequelize.QueryTypes.SELECT,
       }
     );
-    await sequelize.query(
-      `INSERT INTO user_tech_skills (user_id, content_id, score) 
-  VALUES (:user_id, :content_id,  :score);`,
+    if (results) {
+      const referenceDate = new Date(results.created);
+      const currentDate = new Date();
+      const oneWeekLater = new Date(referenceDate);
+      oneWeekLater.setDate(oneWeekLater.getDate() + 7);
+      if (currentDate < oneWeekLater) {
+        sequelize.query(
+          `DELETE FROM user_tech_skills WHERE user_id=:user_id AND content_id=:content_id AND safety_save IS NOT NULL;`,
+          {
+            replacements: {
+              user_id: decoded.userId,
+              content_id: Number(contentId),
+            },
+            type: sequelize.QueryTypes.DELETE,
+          }
+        );
+        sequelize.query(
+          `INSERT INTO user_tech_skills (user_id, content_id, score) 
+        VALUES (:user_id, :content_id,  :score);`,
+          {
+            replacements: {
+              user_id: decoded.userId,
+              content_id: Number(contentId),
+              score: 0,
+            },
+            type: sequelize.QueryTypes.INSERT,
+          }
+        );
+        return res.json({ resultado: 0 });
+      }
+    }
+    if (!userAnswers.length) {
+      sequelize.query(
+        `DELETE FROM user_tech_skills WHERE user_id=:user_id AND content_id=:content_id AND safety_save IS NOT NULL;`,
+        {
+          replacements: {
+            user_id: decoded.userId,
+            content_id: Number(contentId),
+          },
+          type: sequelize.QueryTypes.DELETE,
+        }
+      );
+      sequelize.query(
+        `INSERT INTO user_tech_skills (user_id, content_id, score) 
+        VALUES (:user_id, :content_id,  :score);`,
+        {
+          replacements: {
+            user_id: decoded.userId,
+            content_id: Number(contentId),
+            score: 0,
+          },
+          type: sequelize.QueryTypes.INSERT,
+        }
+      );
+      return res.json({ resultado: 0 });
+    }
+
+    const questions_correct_answers = await sequelize.query(
+      `SELECT id, correct_answer
+      FROM questions
+      WHERE company_id = :company_id AND content_id= :content_id
+      AND TRIM(question) != ''
+      AND TRIM(answer_a) != ''
+      AND TRIM(answer_b) != ''
+      AND TRIM(answer_c) != ''
+      AND TRIM(answer_d) != ''
+      AND TRIM(correct_answer) != ''
+      `,
       {
         replacements: {
-          user_id: decodedToken.userId,
-          content_id: content.id,
+          company_id: decoded.companyId,
+          content_id: Number(contentId),
+        },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    )
+
+    userAnswers.forEach((answer) => {
+      const splitted = answer.split("---")
+      const id = Number(splitted[0])
+      const value = splitted[1]
+      if ((questions_correct_answers.filter((asw) => asw.id == id && asw.correct_answer == value)).length) {
+        questions_answered_ok++
+      }
+    })
+
+    const finalResult = (questions_answered_ok * 100) / questions_correct_answers.length;
+    sequelize.query(
+      `DELETE FROM user_tech_skills WHERE user_id=:user_id AND content_id=:content_id AND safety_save IS NOT NULL;`,
+      {
+        replacements: {
+          user_id: decoded.userId,
+          content_id: Number(contentId),
+        },
+        type: sequelize.QueryTypes.DELETE,
+      }
+    );
+    await sequelize.query(
+      `INSERT INTO user_tech_skills (user_id, content_id, score) 
+        VALUES (:user_id, :content_id,  :score);`,
+      {
+        replacements: {
+          user_id: decoded.userId,
+          content_id: Number(contentId),
           score: Math.floor(finalResult),
         },
         type: sequelize.QueryTypes.INSERT,
       }
     );
-  } catch (err) { console.log(err); res.status(500).json() }
-  return res.json({ resultado: Math.floor(finalResult) });
+    return res.json({ resultado: Math.floor(finalResult) });
+  } catch (err) {
+    res.status(500).json()
+  }
 };
 
 const answerResponse = (req, res) => {
@@ -115,7 +207,7 @@ const contentPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  res.render("tech_content", { techs: techs, background_image: background_image });
+  res.render("tech_content", { techs: techs, background_image: background_image, user_email: decoded.email });
 };
 
 const login = async (req, res) => {
@@ -221,34 +313,41 @@ const deleteUser = async (req, res) => {
 
 
 const checkExamDate = async (req, res) => {
-  const user = decodeToken(req.body.token)
-  const [content] = await sequelize.query(
-    "SELECT id FROM content WHERE filename = :filename",
-    {
-      replacements: {
-        filename: req.body.tech,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    }
-  );
+  const decoded = decodeToken(req.body.token)
   const [results] = await sequelize.query(
-    "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND content_id = :content_id",
+    "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND content_id = :content_id AND safety_save IS NULL ORDER BY id DESC LIMIT 1",
     {
       replacements: {
-        user_id: user.userId,
-        content_id: content.id,
+        user_id: decoded.userId,
+        content_id: req.body.contentId,
       },
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  if (!results) return res.status(200).send({});
+  if (!results) { saveExamZeroResult(decoded.userId, req.body.contentId); return res.status(200).send({}); }
   const referenceDate = new Date(results.created);
   const currentDate = new Date();
-  const oneMonthLater = new Date(referenceDate);
-  oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
-  if (currentDate >= oneMonthLater) return res.status(200).send({});
+  const oneWeekLater = new Date(referenceDate);
+  oneWeekLater.setDate(oneWeekLater.getDate() + 7);
+  if (currentDate >= oneWeekLater) { saveExamZeroResult(decoded.userId, req.body.contentId); return res.status(200).send({}); }
   return res.status(400).send({});
 };
+
+
+const saveExamZeroResult = async (userId, contentId) => {
+  await sequelize.query(
+    `INSERT INTO user_tech_skills (user_id, content_id, score, safety_save) 
+        VALUES (:user_id, :content_id,  :score, "is_for_safety");`,
+    {
+      replacements: {
+        user_id: userId,
+        content_id: Number(contentId),
+        score: 0,
+      },
+      type: sequelize.QueryTypes.INSERT,
+    }
+  );
+}
 
 const adminPage = async (req, res) => {
   const decoded = decodeToken(req.params.token)
@@ -334,8 +433,6 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-
-  console.log(content_question)
 
   return res.render("admin", { results: parsed, users: users, content_question: content_question, background_image: background_image, content_techs: content_techs });
 }
@@ -499,6 +596,44 @@ const deleteContent = (req, res) => {
   })
 }
 
+const loadExamData = async (req, res) => {
+  const decoded = decodeToken(req.params.token)
+  const contentId = req.params.content_id
+  const questions = await sequelize.query(
+    `SELECT id, question, answer_a, answer_b, answer_c, answer_d, correct_answer
+      FROM questions
+      WHERE company_id = :company_id AND content_id= :content_id
+      AND TRIM(question) != ''
+      AND TRIM(answer_a) != ''
+      AND TRIM(answer_b) != ''
+      AND TRIM(answer_c) != ''
+      AND TRIM(answer_d) != ''
+      AND TRIM(correct_answer) != ''
+      `,
+    {
+      replacements: {
+        company_id: decoded.companyId,
+        content_id: Number(contentId),
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  )
+  if (!questions.length) return res.status(500).json({});
+
+  const [{ background_image }] = await sequelize.query(
+    `SELECT background_image from company
+      WHERE id = :company_id`,
+    {
+      replacements: {
+        company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  return res.render("exam", { questions: questions, background_image: background_image, content_id: contentId });
+}
+
 module.exports = {
   resultsTech,
   answerResponse,
@@ -514,4 +649,5 @@ module.exports = {
   postQuestions,
   deleteUser,
   deleteContent,
+  loadExamData,
 };

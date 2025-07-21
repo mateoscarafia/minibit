@@ -98,6 +98,13 @@
       border-bottom: 1px solid #34495e;
       margin-bottom: 20px;
       text-align: center;
+
+      & h1 {
+        background-color: #fff;
+        padding: 10px 20px;
+        color: #000;
+        border-radius: 10px;
+      }
     }
 
     .menu-title {
@@ -185,11 +192,13 @@
 <body>
   <nav class="menu-vertical">
     <div class="menu-header">
-      <img id="logo-img" width="150px" src="http://localhost:3000/images/logo.png" style="border-radius: 10px" />
+      <h1>
+        <%= user_email %>
+      </h1>
     </div>
     <ul class="menu-items">
       <% techs.forEach((tech)=> { %>
-        <li onclick="setTechContent('<%= tech.filename %>', '<%= tech.name %>')" class="menu-item"
+        <li onclick="setTechContent('<%= tech.filename %>', '<%= tech.name %>', '<%= tech.id %>')" class="menu-item"
           id="menu-item-<%= tech.filename %>">
           <%= tech.name %>
         </li>
@@ -201,65 +210,66 @@
 </body>
 
 <script>
-    document.body.style.background = 'url("/images/<%= background_image %>") no-repeat center center fixed';
-    document.body.style.backgroundSize = 'cover'; // Ensures full coverage
-    var techs = <%- JSON.stringify(techs) %>;
+  document.body.style.background = 'url("/images/<%= background_image %>") no-repeat center center fixed';
+  document.body.style.backgroundSize = 'cover'; // Ensures full coverage
+  var contentId = null;
+  var techs = <%- JSON.stringify(techs) %>;
 
 
-    setTimeout(() => {
-      console.log(techs)
-      document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + techs[0].name
-    }, 100)
+  setTimeout(() => {
+    document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + techs[0].name
+  }, 100)
 
 
-    async function testAuth() {
-      const response = await fetch(
-        `${window.location.protocol}//${window.location.host
-        }/verify-token/${localStorage.getItem("minibit-token")}`
-      );
-      if (!response.ok) {
-        window.location.href = "/";
+  async function testAuth() {
+    const response = await fetch(
+      `${window.location.protocol}//${window.location.host
+      }/verify-token/${localStorage.getItem("minibit-token")}`
+    );
+    if (!response.ok) {
+      window.location.href = "/";
+    }
+  }
+  async function takeTest() {
+    fetch(
+      "/check-exam-date",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: localStorage.getItem("minibit-token"),
+          contentId: contentId,
+        }),
       }
-    }
-    async function takeTest() {
-      const tech = window.location.pathname.split("/")[2]
-      const response = await fetch(
-        `${window.location.protocol}//${window.location.host}/check-exam-date`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: localStorage.getItem("minibit-token"),
-            tech: tech,
-          }),
-        }
-      );
+    ).then((response) => {
       if (!response.ok) {
-        window.location.href = "/exam/" + defineTech();
-        alert("No puedes rendir este examen. Debe pasar un mes desde tu ultima vez.")
-      } else {
-        window.location.href = "/exam/" + tech;
+        alert("No puedes rendir este examen. Debe pasar una semana desde tu último intento.")
+        return
       }
-    }
-    async function navigateTo(url) {
-      window.location.href = url;
-    }
-    function defineTech() {
-      const url = window.location.href;
-      if (url.includes("javascript")) return "javascript";
-    }
+      window.location.href = "/exam/" + contentId + "/" + localStorage.getItem("minibit-token");
+    });
+  }
 
-    function setActive(tech) {
-      return url.includes(tech) && "active"
-    }
+  async function navigateTo(url) {
+    window.location.href = url;
+  }
+  function defineTech() {
+    const url = window.location.href;
+    if (url.includes("javascript")) return "javascript";
+  }
 
-    const setTechContent = (file, name) => {
-      const frame = document.getElementById("pdf-file-frame")
-      frame.src = `${window.location.protocol}//${window.location.host}/content-files/${file}`
-      document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + name
-    }
-  </script>
+  function setActive(tech) {
+    return url.includes(tech) && "active"
+  }
+
+  const setTechContent = (file, name, id) => {
+    contentId = id;
+    const frame = document.getElementById("pdf-file-frame")
+    frame.src = `${window.location.protocol}//${window.location.host}/content-files/${file}`
+    document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + name
+  }
+</script>
 
 </html>

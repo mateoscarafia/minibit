@@ -9,30 +9,145 @@
 </head>
 
 <body>
-  <div class="game-container">
-    <div class="question-container">
-      <%= question %>
+  <div class="game-container" id="game_container_id"></div>
+
+  <h1 id="counter">10</h1>
+</body>
+
+<script src="/js/b.js"></script>
+<script>
+  document.body.style.background = 'url("/images/<%= background_image %>") no-repeat center center fixed';
+  document.body.style.backgroundSize = 'cover'; // Ensures full coverage
+  var questions = <%- JSON.stringify(questions) %>;
+  const contentId = "<%= content_id %>"
+  const gameContainer = document.getElementById("game_container_id")
+  var counter = 9;
+  var question_number = 0;
+  var cancelAnswer = false;
+  var gameInterval = null;
+
+  const saveAnswersLocalStorage = (ans) => {
+    if (cancelAnswer) return;
+    cancelAnswer = true;
+    const answers = localStorage.getItem("minibit-answers");
+    if (!answers) {
+      localStorage.setItem("minibit-answers", JSON.stringify([ans]));
+    } else {
+      let parsedAnswers = JSON.parse(answers);
+      localStorage.setItem(
+        "minibit-answers",
+        JSON.stringify([...parsedAnswers, ans])
+      );
+    }
+  };
+
+  const saveExam = () => {
+    fetch(`/save-exam-result`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("minibit-token"),
+      },
+      body: JSON.stringify({
+        userAnswers: JSON.parse(localStorage.getItem("minibit-answers")),
+        contentId: contentId,
+      }),
+    }).then(async (response) => {
+      if (!response.ok) {
+        alert("Lo sentimos. Algo salió mal.")
+      }
+      const data = await response.json();
+      if (data.resultado > 80) {
+        alert(`Increible! Obtuviste un ${data.resultado}%. Felicitaciones!`)
+        return
+      }
+      if (data.resultado > 60) {
+        alert(`Bien! Obtuviste un ${data.resultado}%. Puedes hacerlo mejor!`)
+        return
+      }
+      alert(`Mala suerte! Obtuviste un ${data.resultado}%. Estudia un poco mas e intentalo nuevamente.`)
+    }).catch(() => {
+      alert("Lo sentimos. Algo salió mal.")
+    }).finally(() => {
+      window.location.href = "/content/" + localStorage.getItem("minibit-token");
+    });
+  }
+
+  const renderQuestion = () => {
+    cancelAnswer = false;
+
+    if (!questions[question_number]) {
+      clearInterval(gameInterval)
+      saveExam();
+      return;
+    }
+
+    gameContainer.innerHTML = `
+     <div class="question-container">
+     ${questions[question_number].question}
     </div>
     <div class="options-container">
-      <% options.forEach(option=> { %>
-        <div onclick="saveAnswersLocalStorage('<%= option.response %>')" class="option <%= option.class %>">
+        <div onclick="saveAnswersLocalStorage('${questions[question_number].id}---A')" class="option">
           <div class="option-letter">
-            <%= option.letter %>
+            A
           </div>
           <div class="option-text">
-            <%= option.text %>
+            ${questions[question_number].answer_a}
           </div>
         </div>
-        <% }); %>
+
+        <div onclick="saveAnswersLocalStorage('${questions[question_number].id}---B')" class="option">
+          <div class="option-letter">
+            B
+          </div>
+          <div class="option-text">
+            ${questions[question_number].answer_b}
+          </div>
+        </div>
+
+        <div onclick="saveAnswersLocalStorage('${questions[question_number].id}---C')" class="option">
+          <div class="option-letter">
+            C
+          </div>
+          <div class="option-text">
+            ${questions[question_number].answer_c}
+          </div>
+        </div>
+
+        <div onclick="saveAnswersLocalStorage('${questions[question_number].id}---D')" class="option">
+          <div class="option-letter">
+            D
+          </div>
+          <div class="option-text">
+            ${questions[question_number].answer_d}
+          </div>
+        </div>
     </div>
-    <div id="prize-levels-id" class="prize-levels"></div>
-    <h1 id="counter">10</h1>
   </div>
-</body>
-<script src="/js/exam.js"></script>
-<script>
-  const userId = "<%= userId %>";
+    ` }
+
+  setTimeout(() => {
+    localStorage.setItem(
+      "minibit-answers",
+      JSON.stringify([])
+    )
+    renderQuestion()
+  }, 100)
+
+
+  gameInterval = setInterval(() => {
+    document.getElementById("counter").innerHTML = `${counter}`;
+    if (counter == 10) {
+      question_number++;
+      renderQuestion()
+    }
+    if (counter == 1) {
+      counter = 10;
+    } else {
+      counter--;
+    }
+  }, 1000);
+
 </script>
 
 </html>
-aºbnm

@@ -21,7 +21,8 @@ const {
   createContent,
   postQuestions,
   deleteUser,
-  deleteContent
+  deleteContent,
+  loadExamData
 } = require("./controllers/controllers");
 
 const { loadGameData, gameStarter, upload } = require("./utils/utils");
@@ -40,12 +41,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 
 /// ENDPOINTS  //////////////////////////////////////////
 
-app.get("/exam/:tech", (req, res) => {
-  res.render("exam", {
-    ...loadGameData(1, req.params.tech),
-    userId: Math.floor(10000 + Math.random() * 90000),
-  });
-});
+app.get("/exam/:content_id/:token", loadExamData);
 app.get("/", (req, res) => {
   res.render("login");
 });
@@ -66,7 +62,7 @@ app.get("/get-game-data/:counter/:tech", (req, res) => {
   return res.json(loadGameData(Number(req.params.counter), req.params.tech));
 });
 app.get("/results/:tech", resultsTech);
-app.post("/save-exam-result/:tech", saveExamResult);
+app.post("/save-exam-result", saveExamResult);
 app.post("/check-exam-date", checkExamDate);
 app.post("/post-questions", postQuestions);
 app.post("/create-user", createUser);
