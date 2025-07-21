@@ -442,7 +442,7 @@
     }
 
     .score-span-good {
-      background-color: #1D66E0;
+      background-color: green;
       padding: 5px 8px;
       color: #fff;
       border-radius: 8px;
@@ -450,7 +450,7 @@
     }
 
     .score-span-regular {
-      background-color: #1D66E0;
+      background-color: orange;
       padding: 5px 8px;
       color: #fff;
       border-radius: 8px;
@@ -458,7 +458,7 @@
     }
 
     .score-span-bad {
-      background-color: #1D66E0;
+      background-color: red;
       padding: 5px 8px;
       color: #fff;
       border-radius: 8px;
@@ -480,16 +480,16 @@
     <div id="exam-results-id" class="exam-results">
       <div class="exam-results-header">
         <div class="user-header-form">
-          <input type="text" id="email" placeholder="Email" />
-          <select class="select-content-name" name="content_name_search" name="content_name_search_id">
-            <option value="" disabled selected></option>
+          <input type="text" placeholder="Email" id="mail_search_id" />
+          <select class="select-content-name" name="content_name_search" id="content_name_search_id">
+            <option value="" selected></option>
             <% content_techs.forEach((tech)=> { %>
-              <option value="<%= tech.name %>">
+              <option value="<%= tech.id %>">
                 <%= tech.name %>
               </option>
               <% }); %>
           </select>
-          <span>Filtrar</span>
+          <span onclick="searchResults()">Filtrar</span>
         </div>
       </div>
       <div id="exam-results-items-container-id" class="exam-results-items-container"></div>
@@ -545,16 +545,25 @@
   document.body.style.backgroundSize = 'cover'; // Ensures full coverage
   var contentId = null;
   var blockCreateContent = false;
+  var filterResultsName = "";
+  var filterResultsContentType = "";
   var content_question = <%- JSON.stringify(content_question) %>;
   var content_techs = <%- JSON.stringify(content_techs) %>;
   var users = <%- JSON.stringify(users) %>;
   var results = <%- JSON.stringify(results) %>;
 
-  const showResults = () => {
+  const showResults = (res_inner) => {
     const shownObjects = [];
     const resultContainer = document.getElementById("exam-results-items-container-id")
+    resultContainer.innerHTML = ""
 
-    results.forEach((res) => {
+    const defineClass = (score) => {
+      if (score > 80) return "score-span-good"
+      if (score < 60) return "score-span-bad"
+      return "score-span-regular"
+    }
+
+    res_inner.forEach((res) => {
       if (!shownObjects.includes(`${res.content_id}-${res.user_id}`)) {
         shownObjects.push(`${res.content_id}-${res.user_id}`);
         const content_name = content_techs.filter((ctn) => ctn.id == res.content_id).pop().name
@@ -568,12 +577,24 @@
             <span>
                ${res.created}
             </span>
-            <span class="score-span">
+            <span class=${defineClass(res.score)}>
                ${res.score}%
             </span>
           </div>`
       }
     })
+  }
+
+  const searchResults = () => {
+    const email = document.getElementById("mail_search_id").value
+    const content = document.getElementById("content_name_search_id").value
+    const filtered = results.filter((res) => {
+      if (email && content) return res.email.includes(email) && res.content_id == Number(content)
+      if (email && !content) return res.email.includes(email)
+      if (!email && content) return res.content_id == Number(content)
+      return true
+    })
+    showResults(filtered)
   }
 
   const showContent = () => {
@@ -854,7 +875,7 @@
     showUsers()
     displayQuestionForm()
     showTestContent()
-    showResults()
+    showResults(results)
   }, 100)
 
 </script>
