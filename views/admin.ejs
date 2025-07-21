@@ -251,13 +251,11 @@
     }
 
     .exam-results-item {
-
       width: 96%;
-      margin-left: 1%;
       padding: 10px 0;
       margin: 10px 2%;
       display: flex;
-      justify-content: space-evenly;
+      justify-content: space-around;
       align-items: center;
       border-bottom: 1px solid #ddd;
       cursor: pointer;
@@ -323,6 +321,17 @@
       border-radius: 4px;
       font-size: 12px;
     }
+
+    .select-content-name {
+      width: 180px;
+      height: 30px;
+      padding-left: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      background-color: #fff;
+    }
+
 
     textarea {
       width: 100%;
@@ -421,7 +430,7 @@
       margin: 10px 0 0 5%;
     }
 
-    select {
+    .correct-answer-select {
       width: 100% !important;
       height: 30px;
       padding-left: 15px;
@@ -430,6 +439,30 @@
       border-radius: 4px;
       font-size: 12px;
       margin: 10px 0 0 0;
+    }
+
+    .score-span-good {
+      background-color: #1D66E0;
+      padding: 5px 8px;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .score-span-regular {
+      background-color: #1D66E0;
+      padding: 5px 8px;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .score-span-bad {
+      background-color: #1D66E0;
+      padding: 5px 8px;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -448,8 +481,15 @@
       <div class="exam-results-header">
         <div class="user-header-form">
           <input type="text" id="email" placeholder="Email" />
-          <input type="text" id="password" placeholder="Contraseña" />
-          <span onclick="createUser()">+ Crear</span>
+          <select class="select-content-name" name="content_name_search" name="content_name_search_id">
+            <option value="" disabled selected></option>
+            <% content_techs.forEach((tech)=> { %>
+              <option value="<%= tech.name %>">
+                <%= tech.name %>
+              </option>
+              <% }); %>
+          </select>
+          <span>Filtrar</span>
         </div>
       </div>
       <div id="exam-results-items-container-id" class="exam-results-items-container"></div>
@@ -528,8 +568,8 @@
             <span>
                ${res.created}
             </span>
-            <span>
-               ${res.score}
+            <span class="score-span">
+               ${res.score}%
             </span>
           </div>`
       }
@@ -600,7 +640,7 @@
           
           <span>D</span><input id="answer_${index}_d_id" type="text" class="answer-input" placeholder="Respuesta D" /><br />
           
-          <select name="correct_answer_${index}_name" id="correct_answer_${index}_id">
+          <select class="correct-answer-select" name="correct_answer_${index}_name" id="correct_answer_${index}_id">
             <option value="" disabled selected>Respuesta correcta</option>
             <option value="A">A</option>
             <option value="B">B</option>
