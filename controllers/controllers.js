@@ -6,20 +6,6 @@ const { sequelize } = require("../utils/database");
 const { generateToken, secretKey, decodeToken, generateTokenAdmin, transformQuestions } = require("../utils/utils");
 const jwt = require("jsonwebtoken");
 
-const resultsTech = (req, res) => {
-  const rightAnswers = [];
-
-  const rawDataQuestions = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "../exams", req.params.tech + ".json"))
-  );
-
-  for (let key in rawDataQuestions) {
-    rightAnswers.push(rawDataQuestions[`${key}`].answer);
-  }
-
-  return res.json(rightAnswers);
-};
-
 const saveExamResult = async (req, res) => {
 
   try {
@@ -151,36 +137,6 @@ const saveExamResult = async (req, res) => {
   } catch (err) {
     res.status(500).json()
   }
-};
-
-const answerResponse = (req, res) => {
-  const userResponse = req.params.response;
-  const userData = userResponse.split("--");
-
-  if (
-    fs.existsSync(
-      path.join(__dirname, "../exams", `answers/${userData[1]}.json`)
-    )
-  ) {
-    const rawData = fs.readFileSync(
-      path.join(__dirname, "../exams", `answers/${userData[1]}.json`)
-    );
-    const answersJSON = JSON.parse(rawData);
-    answersJSON[`answers`].push(userData[0]);
-
-    fs.writeFileSync(
-      path.join(__dirname, "../exams", `answers/${userData[1]}.json`),
-      JSON.stringify(answersJSON, null, 2)
-    );
-  } else {
-    const resultJson = { answers: [userData[0]], username: userData[2] };
-    fs.writeFileSync(
-      path.join(__dirname, "../exams", `answers/${userData[1]}.json`),
-      JSON.stringify(resultJson)
-    );
-  }
-
-  return res.json();
 };
 
 const contentPage = async (req, res) => {
@@ -635,8 +591,6 @@ const loadExamData = async (req, res) => {
 }
 
 module.exports = {
-  resultsTech,
-  answerResponse,
   contentPage,
   login,
   loginAdmin,

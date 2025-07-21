@@ -5,22 +5,6 @@ const multer = require('multer');
 const secretKey =
   "ADFASDFADSGFSG478563453F25623945623BF985762349563G3B265234___";
 
-const loadGameData = (counter, tech) => {
-  tech = tech.replaceAll(" ", "_");
-  const rawData = fs.readFileSync(
-    path.join(__dirname, "../exams", tech + ".json")
-  );
-  const questions = JSON.parse(rawData);
-  return questions[`q_${counter}`];
-};
-
-const gameStarter = () => {
-  const rawData = fs.readFileSync(
-    path.join(__dirname, "../exams", "start-game.json")
-  );
-  return JSON.parse(rawData);
-};
-
 const generateToken = (user) => {
   return jwt.sign(
     {
@@ -98,8 +82,6 @@ const transformQuestions = (questions) => {
 }
 
 module.exports = {
-  loadGameData,
-  gameStarter,
   generateToken,
   secretKey,
   decodeToken,

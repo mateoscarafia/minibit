@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
+   <title>Minibit©</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * {
@@ -98,6 +99,11 @@
       margin-top: 10px;
       display: none;
     }
+
+    .hide-admin-button {
+      display: none;
+      background-color: #3E47F5 !important;
+    }
   </style>
   <script>
     function navigateTo(url) {
@@ -141,9 +147,12 @@
     }
     function showAdminInput() {
       document.getElementById("admin-passphrase-group").style.display = "block"
+      document.getElementById("user_email_id").style.display = "none"
+      document.getElementById("user_password_id").style.display = "none"
+      document.getElementById("user_login_button_id").style.display = "none"
+      document.getElementById("admin_soy_admin_id").style.display = "none"
+      document.getElementById("admin_button_id").style.display = "block"
     }
-
-
 
     window.addEventListener("keydown", async (event) => {
       if (event.key === "Enter") {
@@ -177,27 +186,59 @@
       }
     });
 
+    const loginAdmin = async () => {
+
+      if (document.getElementById("admin-passphrase").value) {
+        try {
+          const response = await fetch(
+            `${window.location.protocol}//${window.location.host}/login-admin`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                passphrase: document.getElementById("admin-passphrase").value,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            alert("Lo sentimos, algo falló.");
+            return
+          }
+
+          const data = await response.json();
+          localStorage.setItem("minibit-token", data.token);
+          window.location.href = "/admin/" + data.token;
+        } catch (error) {
+          alert("Lo sentimos, algo falló.");
+        }
+      }
+    }
+
   </script>
 </head>
 
 <body>
   <div class="login-container">
-    <div class="input-group">
+    <div class="input-group" id="user_email_id">
       <label for="username">Email</label>
       <input type="text" id="email" placeholder="Ingrese su email" />
     </div>
 
-    <div class="input-group">
+    <div class="input-group" id="user_password_id">
       <label for="password">Contraseña</label>
       <input type="password" id="password" placeholder="Ingrese su contraseña" />
     </div>
 
-    <button onclick="login()" class="login-button">Login</button>
-    <button onclick="showAdminInput()" class="admin-button">Soy Admin</button>
+    <button onclick="login()" class="login-button" id="user_login_button_id">Login</button>
+    <button onclick="showAdminInput()" class="admin-button" id="admin_soy_admin_id">Soy Admin</button>
 
     <div class="input-group admin-group" id="admin-passphrase-group">
       <input type="password" id="admin-passphrase" placeholder="Ingrese clave" />
     </div>
+    <button onclick="loginAdmin()" class="admin-button hide-admin-button" id="admin_button_id">Login Admin</button>
   </div>
 </body>
 
