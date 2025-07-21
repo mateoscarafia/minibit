@@ -290,6 +290,16 @@
       background-color: red;
     }
 
+    .admin_main_title {
+      position: absolute;
+      right: 0px;
+      top: -30px;
+      text-align: center;
+      font-size: 14px;
+      color: #000;
+      text-transform: capitalize;
+    }
+
     .lateral-menu {
       height: 400px;
       width: 200px;
@@ -298,6 +308,7 @@
       border-radius: 10px;
       margin-right: 30px;
       padding-top: 30px;
+      position: relative;
 
       & div {
         width: 100%;
@@ -470,6 +481,7 @@
 <body>
   <div class="admin-container">
     <div class="lateral-menu">
+      <h1 class="admin_main_title" id="admin_main_title_id">Resultados ></h1>
       <div onclick="displayContainers('resultados')">Resutados</div>
       <div onclick="displayContainers('usuarios')">Usuarios</div>
       <div onclick="displayContainers('contenido')">Contenido</div>
@@ -768,6 +780,9 @@
     document.getElementById("users-container-id").style.display = "none"
     document.getElementById("content-container-id").style.display = "none"
     document.getElementById("tests-container-id").style.display = "none"
+
+    const admin_title = document.getElementById("admin_main_title_id")
+    admin_title.innerHTML = container + " >";
 
     if (container == "usuarios") document.getElementById("users-container-id").style.display = "block"
     if (container == "resultados") document.getElementById("exam-results-id").style.display = "block"
