@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minibit©</title>
+  <title>Acid Labs</title>
   <style>
     /* Estilos básicos para mejorar la visualización del markdown */
 
@@ -249,6 +249,8 @@
         return
       }
       window.location.href = "/exam/" + contentId + "/" + localStorage.getItem("minibit-token");
+    }).catch(() => {
+      alert("No hay examen disponible aun para este contenido. Contacta al administrador.")
     });
   }
 

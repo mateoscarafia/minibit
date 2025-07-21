@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minibit©</title>
+  <title>Acid Labs</title>
   <link rel="stylesheet" href="/css/exam.css" />
 </head>
 
@@ -14,7 +14,7 @@
   <h1 id="counter">10</h1>
 </body>
 
-<script src="/js/b.js"></script>
+<script src="/js/exam/b.js"></script>
 <script>
   document.body.style.background = 'url("/images/<%= background_image %>") no-repeat center center fixed';
   document.body.style.backgroundSize = 'cover'; // Ensures full coverage
@@ -147,6 +147,34 @@
       counter--;
     }
   }, 1000);
+
+
+  /*
+  const redirect = () => {
+    window.location.href = "/content/" + localStorage.getItem("minibit-token");
+  }
+
+  let start = performance.now();
+  debugger;
+  let end = performance.now();
+
+  if (end - start > 100) { 
+    redirect()
+  }
+
+  document.addEventListener('mousedown', function(event) {
+    if (event.button === 2) {
+      redirect()
+    }
+  });
+
+  document.addEventListener('keydown', function(event) {
+    redirect()
+  });
+  */
+
+
+
 
 </script>
 

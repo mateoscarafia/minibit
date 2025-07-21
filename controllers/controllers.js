@@ -271,7 +271,7 @@ const deleteUser = async (req, res) => {
 const checkExamDate = async (req, res) => {
   const decoded = decodeToken(req.body.token)
   const [results] = await sequelize.query(
-    "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND content_id = :content_id AND safety_save IS NULL ORDER BY id DESC LIMIT 1",
+    "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND content_id = :content_id ORDER BY id DESC LIMIT 1",
     {
       replacements: {
         user_id: decoded.userId,
@@ -280,12 +280,12 @@ const checkExamDate = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  if (!results) { saveExamZeroResult(decoded.userId, req.body.contentId); return res.status(200).send({}); }
+  if (!results) { return res.status(200).send({}); }
   const referenceDate = new Date(results.created);
   const currentDate = new Date();
   const oneWeekLater = new Date(referenceDate);
   oneWeekLater.setDate(oneWeekLater.getDate() + 7);
-  if (currentDate >= oneWeekLater) { saveExamZeroResult(decoded.userId, req.body.contentId); return res.status(200).send({}); }
+  if (currentDate >= oneWeekLater) { return res.status(200).send({}); }
   return res.status(400).send({});
 };
 
@@ -550,6 +550,7 @@ const deleteContent = (req, res) => {
 
 const loadExamData = async (req, res) => {
   const decoded = decodeToken(req.params.token)
+
   const contentId = req.params.content_id
   const questions = await sequelize.query(
     `SELECT id, question, answer_a, answer_b, answer_c, answer_d, correct_answer
@@ -570,7 +571,31 @@ const loadExamData = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   )
-  if (!questions.length) return res.status(500).json({});
+ 
+  if (!questions.length) return res.redirect("/content/" + req.params.token);
+
+  ///check date last exam
+  const [results] = await sequelize.query(
+    "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND content_id = :content_id ORDER BY id DESC LIMIT 1",
+    {
+      replacements: {
+        user_id: decoded.userId,
+        content_id: req.params.content_id,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+  if (results) {
+    const referenceDate = new Date(results.created);
+    const currentDate = new Date();
+    const oneWeekLater = new Date(referenceDate);
+    oneWeekLater.setDate(oneWeekLater.getDate() + 7);
+    if (currentDate <= oneWeekLater) {
+      return res.redirect("/content/" + req.params.token);
+    }
+  }
+
+  saveExamZeroResult(decoded.userId, req.params.content_id);
 
   const [{ background_image }] = await sequelize.query(
     `SELECT background_image from company
