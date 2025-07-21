@@ -40,6 +40,14 @@
       border-radius: 10px;
     }
 
+    .exam-results-header {
+      width: 100%;
+      height: 80px;
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
     .users-container {
       height: 700px;
       width: 600px;
@@ -243,16 +251,16 @@
     }
 
     .exam-results-item {
-      height: 700px;
-      width: 98%;
+
+      width: 96%;
       margin-left: 1%;
-      padding: 10px;
+      padding: 10px 0;
+      margin: 10px 2%;
       display: flex;
       justify-content: space-evenly;
       align-items: center;
       border-bottom: 1px solid #ddd;
       cursor: pointer;
-      border-radius: 8px;
     }
 
     .exam-results-item:hover {
@@ -261,8 +269,20 @@
 
     .exam-results-items-container {
       width: 100%;
-      height: 610px;
+      height: 590px;
       overflow-y: scroll;
+    }
+
+    .exam-results-items-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .exam-results-items-container {
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
     }
 
     .color-ref {
@@ -425,26 +445,14 @@
 
     <!-- RESULTADOS EXAMENES -->
     <div id="exam-results-id" class="exam-results">
-      <div class="exam-results-header"></div>
-      <div id="exam-results-items-container-id" class="exam-results-items-container">
-        <% results.forEach((result)=> { %>
-          <div class="exam-results-item">
-            <span>
-              <%= result.email %>
-            </span>
-            <span><b>
-                <%= result.name %>
-              </b></span>
-            <span>
-              <%= result.created %>
-            </span>
-            <span>
-              <%= result.score %>
-            </span>
-            <div class="color-ref"></div>
-          </div>
-          <% }); %>
+      <div class="exam-results-header">
+        <div class="user-header-form">
+          <input type="text" id="email" placeholder="Email" />
+          <input type="text" id="password" placeholder="Contraseña" />
+          <span onclick="createUser()">+ Crear</span>
+        </div>
       </div>
+      <div id="exam-results-items-container-id" class="exam-results-items-container"></div>
     </div>
 
     <!-- USUARIOS -->
@@ -500,6 +508,33 @@
   var content_question = <%- JSON.stringify(content_question) %>;
   var content_techs = <%- JSON.stringify(content_techs) %>;
   var users = <%- JSON.stringify(users) %>;
+  var results = <%- JSON.stringify(results) %>;
+
+  const showResults = () => {
+    const shownObjects = [];
+    const resultContainer = document.getElementById("exam-results-items-container-id")
+
+    results.forEach((res) => {
+      if (!shownObjects.includes(`${res.content_id}-${res.user_id}`)) {
+        shownObjects.push(`${res.content_id}-${res.user_id}`);
+        const content_name = content_techs.filter((ctn) => ctn.id == res.content_id).pop().name
+        resultContainer.innerHTML += `<div class="exam-results-item">
+            <span>
+              ${res.email}
+            </span>
+            <span><b>
+               ${content_name}
+              </b></span>
+            <span>
+               ${res.created}
+            </span>
+            <span>
+               ${res.score}
+            </span>
+          </div>`
+      }
+    })
+  }
 
   const showContent = () => {
     const contentContainer = document.getElementById("content-items-container-id")
@@ -779,6 +814,7 @@
     showUsers()
     displayQuestionForm()
     showTestContent()
+    showResults()
   }, 100)
 
 </script>

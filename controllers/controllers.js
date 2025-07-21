@@ -313,7 +313,6 @@ const adminPage = async (req, res) => {
     `SELECT *
       FROM user_tech_skills
       INNER JOIN users ON user_tech_skills.user_id = users.id
-      INNER JOIN content ON user_tech_skills.content_id = content.id
       WHERE users.company_id = :company_id`,
     {
       replacements: {
@@ -376,9 +375,6 @@ const adminPage = async (req, res) => {
       }
     )
   })
-
-
-
   const [{ background_image }] = await sequelize.query(
     `SELECT background_image from company
       WHERE id = :company_id`,
