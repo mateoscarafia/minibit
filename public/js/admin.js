@@ -12,7 +12,7 @@
     res_inner.forEach((res) => {
       if (!shownObjects.includes(`${res.content_id}-${res.user_id}`)) {
         shownObjects.push(`${res.content_id}-${res.user_id}`);
-        const content_name = content_techs.filter((ctn) => ctn.id == res.content_id).pop().name
+        const content_name = content_techs.filter((ctn) => ctn.content_id == res.content_id).pop()?.name
         resultContainer.innerHTML += `<div class="exam-results-item">
             <span>
               ${res.email}
@@ -130,7 +130,9 @@
   }
 
   const openQuestionModal = (id) => {
+    console.log(id)
     contentId = id;
+    console.log(content_question)
     const filteredContent = content_question.filter((cnt) => cnt.id == id).pop()
     document.getElementById("tests-container-id-form").style.display = "block"
     displayQuestionForm(filteredContent.questions)

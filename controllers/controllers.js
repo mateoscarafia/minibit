@@ -112,7 +112,7 @@ const saveExamResult = async (req, res) => {
 
     const finalResult = (questions_answered_ok * 100) / questions_correct_answers.length;
     sequelize.query(
-      `DELETE FROM user_tech_skills WHERE user_id=:user_id AND content_id=:content_id AND safety_save IS NOT NULL;`,
+      `DELETE FROM user_tech_skills WHERE user_id=:user_id AND content_id=:content_id;`,
       {
         replacements: {
           user_id: decoded.userId,
@@ -155,7 +155,7 @@ const contentPage = async (req, res) => {
     }
   );
 
-   const user_exams = await sequelize.query(
+  const user_exams = await sequelize.query(
     `SELECT *
       FROM user_tech_skills WHERE user_id = :user_id`,
     {
@@ -181,7 +181,7 @@ const contentPage = async (req, res) => {
         AND TRIM(correct_answer) != ''`,
           {
             replacements: {
-              content_id: tech.id,
+              content_id: tech.content_id,
             },
             type: sequelize.QueryTypes.SELECT,
           }
@@ -355,7 +355,7 @@ const adminPage = async (req, res) => {
     `SELECT *
       FROM user_tech_skills
       INNER JOIN users ON user_tech_skills.user_id = users.id
-      WHERE users.company_id = :company_id`,
+      WHERE users.company_id = :company_id ORDER BY user_tech_skills.id DESC`,
     {
       replacements: {
         company_id: decoded.companyId,
@@ -395,28 +395,30 @@ const adminPage = async (req, res) => {
     }
   );
 
-  const content_question = [];
+  const content_question = await Promise.all(
+    content_techs.map(async (content) => {
+      const questions = await sequelize.query(
+        `SELECT *
+         FROM questions
+         WHERE company_id = :company_id 
+         AND content_id = :content_id`,
+        {
+          replacements: {
+            company_id: decoded.companyId,
+            content_id: content.content_id,
+          },
+          type: sequelize.QueryTypes.SELECT,
+        }
+      );
 
-  content_techs.forEach(async (content, index) => {
-    content_question.push(
-      {
-        name: content_techs[index].name,
-        id: content_techs[index].id,
-        questions: await sequelize.query(
-          `SELECT *
-      FROM questions
-      WHERE company_id = :company_id AND content_id= :content_id`,
-          {
-            replacements: {
-              company_id: decoded.companyId,
-              content_id: content_techs[index].id,
-            },
-            type: sequelize.QueryTypes.SELECT,
-          }
-        )
-      }
-    )
-  })
+      return {
+        name: content.name,
+        id: content.content_id,
+        questions
+      };
+    })
+  );
+
   const [{ background_image }] = await sequelize.query(
     `SELECT background_image from company
       WHERE id = :company_id`,

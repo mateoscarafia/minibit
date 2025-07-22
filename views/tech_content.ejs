@@ -221,11 +221,9 @@
     const contentContainer = document.getElementById("menu-items-id")
 
     techs.forEach((tech) => {
+      const is_exam = user_exams.filter((ex) => ex.content_id == tech.content_id ).pop()
       console.log(tech)
-      console.log(user_exams)
-      const is_exam = user_exams.filter((ex) => ex.content_id == tech.id ).pop()
-      console.log(is_exam)
-      contentContainer.innerHTML += `<li onclick="setTechContent('${tech.filename}', '${tech.name}', '${tech.id}' )" class="menu-item"
+      contentContainer.innerHTML += `<li onclick="setTechContent('${tech.filename}', '${tech.name}', '${tech.content_id}' )" class="menu-item"
           id="menu-item-${tech.filename}">
           ${tech.name}
           ${is_exam ? `<br/><span>Score: ${is_exam.score}% - ${new Date(is_exam.created).toLocaleDateString('en-GB')}</span>` : "" }

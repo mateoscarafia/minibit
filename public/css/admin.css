@@ -244,8 +244,8 @@
 
  .exam-results-item {
    width: 96%;
-   padding: 10px 0;
-   margin: 10px 2%;
+   padding: 5px 0;
+   margin: 3px 2%;
    display: flex;
    justify-content: space-around;
    align-items: center;
