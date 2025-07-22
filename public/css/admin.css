@@ -85,12 +85,19 @@
    cursor: pointer;
 
    & span {
-     width: 30%;
+     width: 40%;
+      overflow: hidden;
+      display: flex;
+   }
+
+   & .smaller-user-span {
+     width: 32px;
    }
 
    & span:last-child {
      text-align: right;
      cursor: pointer;
+     width: 60px;
    }
 
    & span:last-child:hover {
@@ -253,18 +260,18 @@
    cursor: pointer;
 
    & span {
-    width: 30%;
-    
-    overflow: hidden;
+     width: 30%;
+
+     overflow: hidden;
    }
 
    & .date-span {
-    width: 70px;
+     width: 70px;
    }
 
    & span:last-child {
-    width: 50px;
-    text-align: center;
+     width: 50px;
+     text-align: center;
    }
  }
 
