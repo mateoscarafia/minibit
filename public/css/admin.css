@@ -251,6 +251,21 @@
    align-items: center;
    border-bottom: 1px solid #ddd;
    cursor: pointer;
+
+   & span {
+    width: 30%;
+    
+    overflow: hidden;
+   }
+
+   & .date-span {
+    width: 70px;
+   }
+
+   & span:last-child {
+    width: 50px;
+    text-align: center;
+   }
  }
 
  .exam-results-item:hover {

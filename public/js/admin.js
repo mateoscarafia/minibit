@@ -20,7 +20,7 @@
             <span><b>
                ${content_name}
               </b></span>
-            <span>
+            <span class="date-span">
                ${res.created}
             </span>
             <span class=${defineClass(res.score)}>
@@ -93,6 +93,7 @@
   const displayQuestionForm = (questions) => {
     if (!questions) return
     const testContainer = document.getElementById("form-question-container-id");
+    testContainer.innerHTML = ``;
     [...Array(50).keys()].forEach((item, index) => {
       testContainer.innerHTML += `
         <div class="answer-block">

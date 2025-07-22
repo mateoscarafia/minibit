@@ -134,11 +134,16 @@
       border-radius: 4px;
       margin-bottom: 5px;
       cursor: pointer;
-      transition: background-color 0.3s;
+
+      & span {
+        font-size: 12px;
+        font-style: italic;
+      }
     }
 
     .menu-item:hover {
       background-color: #1d66e0;
+      color: #fff;
     }
 
     .menu-item.active {
@@ -223,6 +228,7 @@
       contentContainer.innerHTML += `<li onclick="setTechContent('${tech.filename}', '${tech.name}', '${tech.id}' )" class="menu-item"
           id="menu-item-${tech.filename}">
           ${tech.name}
+          ${is_exam ? `<br/><span>Score: ${is_exam.score}% - ${new Date(is_exam.created).toLocaleDateString('en-GB')}</span>` : "" }
         </li>`
     })
   }
