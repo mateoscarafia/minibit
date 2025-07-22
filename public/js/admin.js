@@ -130,9 +130,7 @@
   }
 
   const openQuestionModal = (id) => {
-    console.log(id)
     contentId = id;
-    console.log(content_question)
     const filteredContent = content_question.filter((cnt) => cnt.id == id).pop()
     document.getElementById("tests-container-id-form").style.display = "block"
     displayQuestionForm(filteredContent.questions)

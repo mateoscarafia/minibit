@@ -245,7 +245,6 @@ const loginAdmin = async (req, res) => {
 
     return res.json({ token: generateTokenAdmin(results) });
   } catch (error) {
-    console.log(error)
     return res.status(400).send("Error");
   }
 };

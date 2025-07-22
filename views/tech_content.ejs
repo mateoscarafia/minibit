@@ -222,7 +222,6 @@
 
     techs.forEach((tech) => {
       const is_exam = user_exams.filter((ex) => ex.content_id == tech.content_id ).pop()
-      console.log(tech)
       contentContainer.innerHTML += `<li onclick="setTechContent('${tech.filename}', '${tech.name}', '${tech.content_id}' )" class="menu-item"
           id="menu-item-${tech.filename}">
           ${tech.name}
