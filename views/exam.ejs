@@ -27,7 +27,10 @@
   var gameInterval = null;
 
   const saveAnswersLocalStorage = (ans) => {
-    if (cancelAnswer) return;
+    if (cancelAnswer) {
+      alert("No puedes cambiar tu respuesta.")
+      return;
+    };
     cancelAnswer = true;
     const answers = localStorage.getItem("minibit-answers");
     if (!answers) {
@@ -39,6 +42,15 @@
         JSON.stringify([...parsedAnswers, ans])
       );
     }
+    const option_a = document.getElementById("option-a-select");
+    const option_b = document.getElementById("option-b-select");
+    const option_c = document.getElementById("option-c-select");
+    const option_d = document.getElementById("option-d-select");
+
+    if(ans.includes("--A")) option_a.style.fontWeight = "bold"
+    if(ans.includes("--B")) option_b.style.fontWeight = "bold"
+    if(ans.includes("--C")) option_c.style.fontWeight = "bold"
+    if(ans.includes("--D")) option_d.style.fontWeight = "bold"
   };
 
   const saveExam = () => {
@@ -91,7 +103,7 @@
           <div class="option-letter">
             A
           </div>
-          <div class="option-text">
+          <div class="option-text" id="option-a-select">
             ${questions[question_number].answer_a}
           </div>
         </div>
@@ -100,7 +112,7 @@
           <div class="option-letter">
             B
           </div>
-          <div class="option-text">
+          <div class="option-text" id="option-b-select">
             ${questions[question_number].answer_b}
           </div>
         </div>
@@ -109,7 +121,7 @@
           <div class="option-letter">
             C
           </div>
-          <div class="option-text">
+          <div class="option-text" id="option-c-select">
             ${questions[question_number].answer_c}
           </div>
         </div>
@@ -118,7 +130,7 @@
           <div class="option-letter">
             D
           </div>
-          <div class="option-text">
+          <div class="option-text" id="option-d-select">
             ${questions[question_number].answer_d}
           </div>
         </div>

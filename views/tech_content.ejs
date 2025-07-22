@@ -248,6 +248,7 @@
         alert("No puedes rendir este examen. Debe pasar una semana desde tu último intento.")
         return
       }
+      alert("Recuerda: No intentes abrir la consola del navegador ni utilices el teclado. De lo contrario, anularemos el examen.")
       window.location.href = "/exam/" + contentId + "/" + localStorage.getItem("minibit-token");
     }).catch(() => {
       alert("No hay examen disponible aun para este contenido. Contacta al administrador.")
