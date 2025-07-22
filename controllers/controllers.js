@@ -142,6 +142,7 @@ const saveExamResult = async (req, res) => {
 const contentPage = async (req, res) => {
   const token = req.params.token;
   const decoded = decodeToken(token)
+
   const techs = await sequelize.query(
     `SELECT *
       FROM content
@@ -153,6 +154,47 @@ const contentPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
+
+   const user_exams = await sequelize.query(
+    `SELECT *
+      FROM user_tech_skills WHERE user_id = :user_id`,
+    {
+      replacements: {
+        user_id: decoded.userId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  const tech_parsed = await Promise.all(
+    techs.map(async (tech) => {
+      try {
+        const [{ count }] = await sequelize.query(
+          `SELECT count(*) as count
+        FROM questions
+        WHERE content_id = :content_id
+        AND TRIM(question) != ''
+        AND TRIM(answer_a) != ''
+        AND TRIM(answer_b) != ''
+        AND TRIM(answer_c) != ''
+        AND TRIM(answer_d) != ''
+        AND TRIM(correct_answer) != ''`,
+          {
+            replacements: {
+              content_id: tech.id,
+            },
+            type: sequelize.QueryTypes.SELECT,
+          }
+        );
+        return count > 0 ? tech : null;
+      } catch (error) {
+        console.error(`Error processing tech ${tech.id}:`, error);
+        return null;
+      }
+    })
+  ).then(results => results.filter(Boolean));
+
+
   const [{ background_image }] = await sequelize.query(
     `SELECT background_image from company
       WHERE id = :company_id`,
@@ -163,7 +205,7 @@ const contentPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  res.render("tech_content", { techs: techs, background_image: background_image, user_email: decoded.email });
+  res.render("tech_content", { techs: tech_parsed, background_image: background_image, user_email: decoded.email, user_exams: user_exams });
 };
 
 const login = async (req, res) => {
@@ -571,7 +613,7 @@ const loadExamData = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   )
- 
+
   if (!questions.length) return res.redirect("/content/" + req.params.token);
 
   ///check date last exam

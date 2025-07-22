@@ -104,6 +104,7 @@
         padding: 10px 20px;
         color: #000;
         border-radius: 10px;
+        font-size: 13px;
       }
     }
 
@@ -158,7 +159,7 @@
       font-weight: bold;
       background-color: #44d17e;
       /* Button color */
-      color: #2c2c2c;
+      color: #fff;
       /* Text color */
       border: none;
       /* Remove default border */
@@ -170,7 +171,7 @@
       /* Remove underline */
       display: inline-block;
       /* Allow setting dimensions */
-      font-size: 16px;
+      font-size: 13px;
       /* Text size */
       margin: 4px 2px;
       /* Some spacing */
@@ -185,6 +186,7 @@
       position: absolute;
       bottom: 20px;
       width: 27%;
+
     }
   </style>
 </head>
@@ -196,14 +198,7 @@
         <%= user_email %>
       </h1>
     </div>
-    <ul class="menu-items">
-      <% techs.forEach((tech)=> { %>
-        <li onclick="setTechContent('<%= tech.filename %>', '<%= tech.name %>', '<%= tech.id %>')" class="menu-item"
-          id="menu-item-<%= tech.filename %>">
-          <%= tech.name %>
-        </li>
-        <% }); %>
-    </ul>
+    <ul class="menu-items" id="menu-items-id"></ul>
     <button onclick="takeTest()" class="take-test-button" id="take-test-button-id"></button>
   </nav>
   <embed class="markdown-container" id="pdf-file-frame" src="" type="application/pdf">
@@ -214,11 +209,23 @@
   document.body.style.backgroundSize = 'cover'; // Ensures full coverage
   var contentId = null;
   var techs = <%- JSON.stringify(techs) %>;
+  var user_exams = <%- JSON.stringify(user_exams) %>;
 
 
-  setTimeout(() => {
-    document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + techs[0].name
-  }, 100)
+  const showContentList = () => {
+    const contentContainer = document.getElementById("menu-items-id")
+
+    techs.forEach((tech) => {
+      console.log(tech)
+      console.log(user_exams)
+      const is_exam = user_exams.filter((ex) => ex.content_id == tech.id ).pop()
+      console.log(is_exam)
+      contentContainer.innerHTML += `<li onclick="setTechContent('${tech.filename}', '${tech.name}', '${tech.id}' )" class="menu-item"
+          id="menu-item-${tech.filename}">
+          ${tech.name}
+        </li>`
+    })
+  }
 
 
   async function testAuth() {
@@ -273,6 +280,11 @@
     frame.src = `${window.location.protocol}//${window.location.host}/content-files/${file}`
     document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + name
   }
+
+   setTimeout(() => {
+    document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + techs[0].name
+    showContentList()
+  }, 100)
 </script>
 
 </html>

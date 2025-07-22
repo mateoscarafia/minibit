@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acid Labs</title>
   <link rel="stylesheet" href="/css/exam.css" />
 </head>
-
 <body>
   <div class="game-container" id="game_container_id"></div>
-
   <h1 id="counter">10</h1>
 </body>
-
+<script src="/js/exam/_.js"></script>
+<script src="/js/exam/__t.js"></script>
+<script src="/js/exam/_a.js"></script>
+<script src="/js/exam/_l_.js"></script>
 <script src="/js/exam/b.js"></script>
+<script src="/js/exam/c.js"></script>
 <script>
   document.body.style.background = 'url("/images/<%= background_image %>") no-repeat center center fixed';
   document.body.style.backgroundSize = 'cover'; // Ensures full coverage
@@ -26,6 +27,7 @@
   var cancelAnswer = false;
   var gameInterval = null;
 
+  /*
   const saveAnswersLocalStorage = (ans) => {
     if (cancelAnswer) {
       alert("No puedes cambiar tu respuesta.")
@@ -160,6 +162,7 @@
     }
   }, 1000);
 
+  */
 
   /*
   const redirect = () => {
@@ -184,9 +187,6 @@
     redirect()
   });
   */
-
-
-
 
 </script>
 
