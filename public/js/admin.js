@@ -1,3 +1,5 @@
+var scoreFilter = null;
+
 const showResults = (res_inner) => {
   const shownObjects = [];
   const resultContainer = document.getElementById("exam-results-items-container-id")
@@ -58,7 +60,7 @@ const showContent = () => {
   })
 }
 
-const showUsers = () => {
+const showUsers = (user_inner) => {
   const userContainer = document.getElementById("user-items-container-id")
   userContainer.innerHTML = "";
 
@@ -70,13 +72,17 @@ const showUsers = () => {
     return "⛔️";
   }
 
-  users.forEach((user) => {
+  user_inner.forEach((user) => {
     const userResults = results.filter((res) => res.user_id == user.id)
     const sum = userResults.reduce((total, item) => {
       return total + item.score;
     }, 0);
     const prom = Math.floor(sum / userResults.length)
-    const userScore = prom > 80 ? 3 : prom < 60 ? 1 : 2;
+    const userScore = isNaN(prom) ? 1 : prom > 80 ? 3 : prom < 60 ? 1 : 2;
+
+    if(scoreFilter && scoreFilter != userScore) {
+      return;
+    }
 
     userContainer.innerHTML += `<div class="user-item user-score-${userScore}">
             <span>${showEmoji(userScore)}<b>
@@ -87,7 +93,7 @@ const showUsers = () => {
               pwd: ${user.password}
             </span>
             <span class="smaller-user-span">${userResults.length}/${amountContents}</span>
-            <span style="font-weight: bold" class="smaller-user-span">${prom}%</span>
+            <span style="font-weight: bold" class="smaller-user-span">${isNaN(prom) ? 0 : prom}%</span>
             <span onclick="deleteUser('${user.id}')">Eliminar</span>
           </div>`
   })
@@ -201,7 +207,7 @@ const deleteUser = async (id) => {
   }).then(() => {
     alert("Usuario eliminado.")
     users = users.filter((user) => Number(user.id) !== Number(id))
-    showUsers()
+    showUsers(users)
   });
 }
 
@@ -298,6 +304,17 @@ const createContent = async () => {
   }
 }
 
+const searchUser = () => {
+  const email = document.getElementById("email").value || "";
+  const filtered_users = users.filter((us)=> us.email.includes(email))
+  showUsers(filtered_users)
+}
+
+const searchUserScore = (score) => {
+  scoreFilter = score
+  showUsers(users)
+}
+
 const createUser = async () => {
 
   const email = document.getElementById("email").value || "";
@@ -329,7 +346,7 @@ const createUser = async () => {
     const userContainer = document.getElementById("user-items-container-id")
 
     users.push({ email: email, password: password, id: result.user })
-    showUsers()
+    showUsers(users)
     document.getElementById("email").value = "";
     document.getElementById("password").value = "";
 
@@ -340,7 +357,7 @@ const createUser = async () => {
 
 setTimeout(() => {
   showContent()
-  showUsers()
+  showUsers(users)
   displayQuestionForm()
   showTestContent()
   showResults(results)

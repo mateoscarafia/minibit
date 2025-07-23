@@ -45,6 +45,13 @@
           <input type="text" id="email" placeholder="Email" />
           <input type="text" id="password" placeholder="Contraseña" />
           <span onclick="createUser()">+ Crear</span>
+          <span onclick="searchUser()">Buscar</span>
+          <span>|</span>
+          <span style="width:7px" onclick="searchUserScore(3)">✅</span>
+          <span style="width:7px" onclick="searchUserScore(2)">⚠️</span>
+          <span style="width:7px" onclick="searchUserScore(1)">⛔️</span>
+          <span style="width:3px">-</span>
+          <span style="width:7px" onclick="searchUserScore(null)">↩️</span>
         </div>
       </div>
       <div id="user-items-container-id" class="user-items-container"></div>
