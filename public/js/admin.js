@@ -289,6 +289,12 @@ const createContent = async () => {
     return;
   }
 
+  if(content_techs.length > 9) {
+    alert('Puedes crear hasta 10 Contenidos');
+    blockCreateContent = false
+    return;
+  }
+
   // Prepare the form data
   const formData = new FormData();
   formData.append('pdfFile', file);
