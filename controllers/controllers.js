@@ -372,7 +372,7 @@ const adminPage = async (req, res) => {
   const users = await sequelize.query(
     `SELECT *
       FROM users
-      WHERE company_id = :company_id`,
+      WHERE company_id = :company_id ORDER BY id DESC`,
     {
       replacements: {
         company_id: decoded.companyId,
@@ -385,7 +385,7 @@ const adminPage = async (req, res) => {
     `SELECT *
       FROM content
       INNER JOIN company_content ON content.id = company_content.content_id
-      WHERE company_content.company_id = :company_id`,
+      WHERE company_content.company_id = :company_id ORDER BY content.id DESC`,
     {
       replacements: {
         company_id: decoded.companyId,

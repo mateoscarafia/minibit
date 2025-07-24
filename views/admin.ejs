@@ -11,11 +11,11 @@
 <body>
   <div class="admin-container">
     <div class="lateral-menu">
-      <h1 class="admin_main_title" id="admin_main_title_id">Resultados ></h1>
+      <h1 class="admin_main_title" id="admin_main_title_id">Resultados</h1>
       <div onclick="displayContainers('resultados')">Resutados</div>
       <div onclick="displayContainers('usuarios')">Usuarios</div>
       <div onclick="displayContainers('contenido')">Contenido</div>
-      <div onclick="displayContainers('tests')">Tests</div>
+      <div onclick="displayContainers('examenes')">Examenes</div>
     </div>
 
     <!-- RESULTADOS EXAMENES -->
@@ -26,11 +26,12 @@
           <select class="select-content-name" name="content_name_search" id="content_name_search_id">
             <option value="" selected></option>
             <% content_techs.forEach((tech)=> { %>
-              <option value="<%= tech.id %>">
+              <option value="<%= tech.content_id %>">
                 <%= tech.name %>
               </option>
               <% }); %>
           </select>
+          <span onclick="searchResultsSorted()">⏬</span>
           <span onclick="searchResults()">Filtrar</span>
         </div>
       </div>
@@ -92,9 +93,6 @@
 <script>/* VARIABLES GLOBALES Y SETEO INICIAL */
   document.body.style.background = 'url("/images/<%= background_image %>") no-repeat center center fixed';
   document.body.style.backgroundSize = 'cover'; // Ensures full coverage
-  var contentId = null;
-  var blockCreateContent = false;
-  var filterResultsName = "";
   var filterResultsContentType = "";
   var content_question = <%- JSON.stringify(content_question) %>;
   var content_techs = <%- JSON.stringify(content_techs) %>;

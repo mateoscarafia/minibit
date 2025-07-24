@@ -1,4 +1,8 @@
 var scoreFilter = null;
+var contentId = null;
+var blockCreateContent = false;
+var filterResultsName = "";
+sortResults = false
 
 const showResults = (res_inner) => {
   const shownObjects = [];
@@ -33,6 +37,11 @@ const showResults = (res_inner) => {
   })
 }
 
+const searchResultsSorted = () => {
+  sortResults = !sortResults
+  searchResults()
+}
+
 const searchResults = () => {
   const email = document.getElementById("mail_search_id").value
   const content = document.getElementById("content_name_search_id").value
@@ -42,6 +51,7 @@ const searchResults = () => {
     if (!email && content) return res.content_id == Number(content)
     return true
   })
+  if (sortResults) filtered.sort((a, b) => b.score - a.score);
   showResults(filtered)
 }
 
@@ -80,7 +90,7 @@ const showUsers = (user_inner) => {
     const prom = Math.floor(sum / userResults.length)
     const userScore = isNaN(prom) ? 1 : prom > 80 ? 3 : prom < 60 ? 1 : 2;
 
-    if(scoreFilter && scoreFilter != userScore) {
+    if (scoreFilter && scoreFilter != userScore) {
       return;
     }
 
@@ -241,12 +251,12 @@ const displayContainers = (container) => {
   document.getElementById("tests-container-id").style.display = "none"
 
   const admin_title = document.getElementById("admin_main_title_id")
-  admin_title.innerHTML = container + " >";
+  admin_title.innerHTML = container;
 
   if (container == "usuarios") document.getElementById("users-container-id").style.display = "block"
   if (container == "resultados") document.getElementById("exam-results-id").style.display = "block"
   if (container == "contenido") document.getElementById("content-container-id").style.display = "block"
-  if (container == "tests") document.getElementById("tests-container-id").style.display = "block"
+  if (container == "examenes") document.getElementById("tests-container-id").style.display = "block"
 }
 
 const createContent = async () => {
@@ -261,12 +271,21 @@ const createContent = async () => {
   // Check if a file was selected
   if (!file) {
     alert('Debe seleccionar un archivo');
+    blockCreateContent = false
     return;
   }
 
   // Check if the file is a PDF
   if (file.type !== 'application/pdf') {
     alert('El archivo debe ser PDF');
+    blockCreateContent = false
+    return;
+  }
+
+  // Check if the file is larger than 2 MB (2 * 1024 * 1024 bytes)
+  if (file.size > 2 * 1024 * 1024) {
+    alert('El archivo debe ser menor a 2 MB');
+    blockCreateContent = false
     return;
   }
 
@@ -287,8 +306,8 @@ const createContent = async () => {
       if (response.ok) {
         const result = await response.json();
         alert('Contenido subido exitosamente.');
-        content_techs.push({ name: result.name, filename: result.filename, content_id: result.id })
-        content_question.push({ name: result.name, id: result.id, questions: [] })
+        content_techs.unshift({ name: result.name, filename: result.filename, content_id: result.id })
+        content_question.unshift({ name: result.name, id: result.id, questions: [] })
         showContent()
         showTestContent()
       } else {
@@ -306,7 +325,7 @@ const createContent = async () => {
 
 const searchUser = () => {
   const email = document.getElementById("email").value || "";
-  const filtered_users = users.filter((us)=> us.email.includes(email))
+  const filtered_users = users.filter((us) => us.email.includes(email))
   showUsers(filtered_users)
 }
 
@@ -345,7 +364,7 @@ const createUser = async () => {
     const result = await response.json();
     const userContainer = document.getElementById("user-items-container-id")
 
-    users.push({ email: email, password: password, id: result.user })
+    users.unshift({ email: email, password: password, id: result.user })
     showUsers(users)
     document.getElementById("email").value = "";
     document.getElementById("password").value = "";
