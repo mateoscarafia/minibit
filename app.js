@@ -19,7 +19,9 @@ const {
   postQuestions,
   deleteUser,
   deleteContent,
-  loadExamData
+  loadExamData,
+  deleteResult,
+  statusContent
 } = require("./controllers/controllers");
 
 const { upload } = require("./utils/utils");
@@ -54,6 +56,8 @@ app.post("/post-questions", postQuestions);
 app.post("/create-user", createUser);
 app.post("/delete-user", deleteUser);
 app.post("/delete-content", deleteContent);
+app.post("/delete-result", deleteResult);
+app.post("/enable-content",statusContent)
 app.post('/create-content', upload.single('pdfFile'), createContent);
 
 // Error handling middleware

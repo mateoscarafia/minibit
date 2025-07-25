@@ -29,13 +29,34 @@ const showResults = (res_inner) => {
             <span class="date-span">
                ${res.created}
             </span>
-            <span class=${defineClass(res.score)}>
+            <span style="width:50px; text-align: center" class=${defineClass(res.score)}>
                ${res.score}%
             </span>
+            <span onclick='deleteResult("${res.id}")'>x</span>
           </div>`
     }
   })
 }
+
+const deleteResult = async (id) => {
+  fetch('/delete-result', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      token: localStorage.getItem("minibit-token"),
+    },
+    body: JSON.stringify({
+      id: id,
+    })
+  }).then(() => {
+    alert("Resultado eliminado.")
+    const filtered = results.filter((res) => res.id != Number(id))
+    showResults(filtered)
+  }).catch(() => {
+    alert("Algo fallo.")
+  });
+}
+
 
 const searchResultsSorted = () => {
   sortResults = !sortResults
@@ -64,10 +85,35 @@ const showContent = () => {
                 ${tech.name}
               </b>
             </span>
-            <a target="_blank" href="${window.location.protocol}//${window.location.host}/content-files/${tech.filename}">pdf</a>
-           <span onclick="deleteContent(${tech.content_id})">Eliminar</span>
+            <a style="width:10px" target="_blank" href="${window.location.protocol}//${window.location.host}/content-files/${tech.filename}">pdf</a>
+           <span style="width:10px" onclick="statusContent(${tech.content_id}, ${tech.enable})">${tech.enable ? "✅" : "⛔️"}</span>
+            <span style="width:10px" onclick="deleteContent(${tech.content_id})">x</span>
           </div>`
   })
+}
+
+const statusContent = (id, status) => {
+  fetch('/enable-content', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      token: localStorage.getItem("minibit-token"),
+    },
+    body: JSON.stringify({
+      id: id,
+      status: status
+    })
+  }).then(() => {
+    if (status) alert("Contenido deshabilitado")
+    if (!status) alert("Contenido habilitado")
+    content_techs = content_techs.map((res) => {
+      if (res.content_id == id) return { ...res, enable: status ? null : "1" }
+      return res
+    })
+    showContent()
+  }).catch(() => {
+    alert("Algo fallo.")
+  });
 }
 
 const showUsers = (user_inner) => {
@@ -104,7 +150,7 @@ const showUsers = (user_inner) => {
             </span>
             <span class="smaller-user-span">${userResults.length}/${amountContents}</span>
             <span style="font-weight: bold" class="smaller-user-span">${isNaN(prom) ? 0 : prom}%</span>
-            <span onclick="deleteUser('${user.id}')">Eliminar</span>
+            <span onclick="deleteUser('${user.id}')">x</span>
           </div>`
   })
 }
@@ -289,7 +335,7 @@ const createContent = async () => {
     return;
   }
 
-  if(content_techs.length > 9) {
+  if (content_techs.length > 9) {
     alert('Puedes crear hasta 10 Contenidos');
     blockCreateContent = false
     return;

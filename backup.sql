@@ -77,6 +77,7 @@ CREATE TABLE `content` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `filename` varchar(255) NOT NULL,
+  `enable` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -87,7 +88,7 @@ CREATE TABLE `content` (
 
 LOCK TABLES `content` WRITE;
 /*!40000 ALTER TABLE `content` DISABLE KEYS */;
-INSERT INTO `content` VALUES (47,'JAVA','4806648293.pdf'),(55,'WWWWW','2337294342.pdf');
+INSERT INTO `content` VALUES (47,'JAVA','4806648293.pdf',NULL),(55,'WWWWW','2337294342.pdf','1');
 /*!40000 ALTER TABLE `content` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,7 +139,7 @@ CREATE TABLE `user_tech_skills` (
   `safety_save` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=135 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +148,7 @@ CREATE TABLE `user_tech_skills` (
 
 LOCK TABLES `user_tech_skills` WRITE;
 /*!40000 ALTER TABLE `user_tech_skills` DISABLE KEYS */;
-INSERT INTO `user_tech_skills` VALUES (131,32,0,'2025-07-24 19:23:29',47,'is_for_safety'),(133,32,0,'2025-07-24 19:24:02',55,NULL);
+INSERT INTO `user_tech_skills` VALUES (134,30,0,'2025-07-25 22:25:50',55,'is_for_safety');
 /*!40000 ALTER TABLE `user_tech_skills` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,7 +176,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (24,'chancho@gmail.com','123456',1,'2025-07-22 17:54:20'),(26,'sdasdasdas','sdsdasdasd',1,'2025-07-23 21:54:30'),(28,'germo@aaa.com','123456',1,'2025-07-24 19:00:04'),(30,'maa@gmail.com','123456',1,'2025-07-24 19:02:35'),(32,'aaa','aaaa',1,'2025-07-24 19:23:11');
+INSERT INTO `users` VALUES (24,'chancho@gmail.com','123456',1,'2025-07-22 17:54:20'),(26,'sdasdasdas','sdsdasdasd',1,'2025-07-23 21:54:30'),(28,'germo@aaa.com','123456',1,'2025-07-24 19:00:04'),(30,'maa@gmail.com','123456',1,'2025-07-24 19:02:35');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -188,4 +189,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-24 18:04:35
+-- Dump completed on 2025-07-25 19:26:48

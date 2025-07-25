@@ -146,7 +146,7 @@ const contentPage = async (req, res) => {
   const techs = await sequelize.query(
     `SELECT *
       FROM content
-      INNER JOIN company_content ON content.id = company_content.content_id WHERE company_content.company_id =  :company_id`,
+      INNER JOIN company_content ON content.id = company_content.content_id WHERE company_content.company_id =  :company_id AND content.enable IS NOT NULL`,
     {
       replacements: {
         company_id: decoded.companyId,
@@ -351,7 +351,7 @@ const adminPage = async (req, res) => {
   if (!decoded) return res.render("login")
 
   const results = await sequelize.query(
-    `SELECT *
+    `SELECT users.*, user_tech_skills.*, user_tech_skills.id as result_id
       FROM user_tech_skills
       INNER JOIN users ON user_tech_skills.user_id = users.id
       WHERE users.company_id = :company_id ORDER BY user_tech_skills.id DESC`,
@@ -362,6 +362,7 @@ const adminPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
+
   const parsed = results.map((res) => {
     const date = new Date(res.created).toLocaleDateString('en-GB');
     return {
@@ -523,6 +524,41 @@ const postQuestions = async (req, res) => {
 
 }
 
+const deleteResult = (req, res) => {
+  const decoded = decodeToken(req.headers.token)
+  sequelize.query(
+    `DELETE from user_tech_skills where id=:id`,
+    {
+      replacements: {
+        id: req.body.id,
+      },
+      type: sequelize.QueryTypes.DELETE,
+    }
+  ).then(() => {
+    return res.json({});
+  }).catch(() => {
+    return res.status(500).json({});
+  })
+}
+
+const statusContent = (req, res) => {
+  const decoded = decodeToken(req.headers.token)
+  sequelize.query(
+    `UPDATE content set enable=:status where id=:id`,
+    {
+      replacements: {
+        id: req.body.id,
+        status: req.body.status ? null : "1"
+      },
+      type: sequelize.QueryTypes.UPDATE,
+    }
+  ).then(() => {
+    return res.json({});
+  }).catch(() => {
+    return res.status(500).json({});
+  })
+}
+
 const deleteContent = (req, res) => {
   const decoded = decodeToken(req.headers.token)
 
@@ -668,4 +704,6 @@ module.exports = {
   deleteUser,
   deleteContent,
   loadExamData,
+  deleteResult,
+  statusContent
 };
