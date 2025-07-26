@@ -39,22 +39,24 @@ const showResults = (res_inner) => {
 }
 
 const deleteResult = async (id) => {
-  fetch('/delete-result', {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json",
-      token: localStorage.getItem("minibit-token"),
-    },
-    body: JSON.stringify({
-      id: id,
-    })
-  }).then(() => {
-    alert("Resultado eliminado.")
-    const filtered = results.filter((res) => res.id != Number(id))
-    showResults(filtered)
-  }).catch(() => {
-    alert("Algo fallo.")
-  });
+  if (confirm("Seguro desea borrar este Resultado?") == true) {
+    fetch('/delete-result', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("minibit-token"),
+      },
+      body: JSON.stringify({
+        id: id,
+      })
+    }).then(() => {
+      alert("Resultado eliminado.")
+      const filtered = results.filter((res) => res.id != Number(id))
+      showResults(filtered)
+    }).catch(() => {
+      alert("Algo fallo.")
+    });
+  }
 }
 
 
@@ -251,39 +253,43 @@ const postQuestions = async (id) => {
 }
 
 const deleteUser = async (id) => {
-  const response = await fetch('/delete-user', {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json",
-      token: localStorage.getItem("minibit-token"),
-    },
-    body: JSON.stringify({
-      userId: id,
-    })
-  }).then(() => {
-    alert("Usuario eliminado.")
-    users = users.filter((user) => Number(user.id) !== Number(id))
-    showUsers(users)
-  });
+  if (confirm("Seguro desea borrar este Usuario?") == true) {
+    fetch('/delete-user', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("minibit-token"),
+      },
+      body: JSON.stringify({
+        userId: id,
+      })
+    }).then(() => {
+      alert("Usuario eliminado.")
+      users = users.filter((user) => Number(user.id) !== Number(id))
+      showUsers(users)
+    });
+  }
 }
 
 const deleteContent = async (id) => {
-  const response = await fetch('/delete-content', {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json",
-      token: localStorage.getItem("minibit-token"),
-    },
-    body: JSON.stringify({
-      contentId: id,
-    })
-  }).then(() => {
-    alert("Contenido eliminado.")
-    content_techs = content_techs.filter((tech) => tech.content_id != id)
-    showContent()
-  }).catch(() => {
-    alert("Algo fallo.")
-  });
+  if (confirm("Seguro desea borrar este Contenido?") == true) {
+    fetch('/delete-content', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("minibit-token"),
+      },
+      body: JSON.stringify({
+        contentId: id,
+      })
+    }).then(() => {
+      alert("Contenido eliminado.")
+      content_techs = content_techs.filter((tech) => tech.content_id != id)
+      showContent()
+    }).catch(() => {
+      alert("Algo fallo.")
+    });
+  }
 }
 
 const closeQuestionModal = () => {

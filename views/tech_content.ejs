@@ -131,7 +131,7 @@
     .menu-item {
       color: #000;
       padding: 10px;
-      border-radius: 4px;
+      border-radius: 8px;
       margin-bottom: 5px;
       cursor: pointer;
 
@@ -142,7 +142,7 @@
     }
 
     .menu-item:hover {
-      background-color: #1d66e0;
+      background-color: #34495e;
       color: #fff;
     }
 
@@ -224,7 +224,7 @@
       const is_exam = user_exams.filter((ex) => ex.content_id == tech.content_id).pop()
       contentContainer.innerHTML += `<li onclick="setTechContent('${tech.filename}', '${tech.name}', '${tech.content_id}' )" class="menu-item"
           id="menu-item-${tech.filename}">
-          ${tech.name}
+          <b>${tech.name}</b>
           ${is_exam ? `<br/><span>Score: ${is_exam.score}% - ${new Date(is_exam.created).toLocaleDateString('en-GB')}</span>` : ""}
         </li>`
     })
@@ -258,8 +258,10 @@
         alert("No puedes rendir este examen. Debe pasar una semana desde tu último intento.")
         return
       }
-      alert("Recuerda: No intentes abrir la consola del navegador ni utilices el teclado. De lo contrario, anularemos el examen.")
-      window.location.href = "/exam/" + contentId + "/" + localStorage.getItem("minibit-token");
+      if (confirm("¿Listo/a para empezar el examen? Recuerda que una vez iniciado no podrás pausarlo o cancelarlo ⚠️") == true) {
+        alert("⚠️ Importante: Usar el teclado o la consola anulará el examen. ¡Sigue las reglas y éxito! 🚀")
+        window.location.href = "/exam/" + contentId + "/" + localStorage.getItem("minibit-token");
+      }
     }).catch(() => {
       alert("No hay examen disponible aun para este contenido. Contacta al administrador.")
     });
