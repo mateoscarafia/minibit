@@ -439,3 +439,30 @@ setTimeout(() => {
   showTestContent()
   showResults(results)
 }, 100)
+
+/*
+const redirect = () => {
+  localStorage.clear("minibit-token")
+  window.location.href = "/";
+}
+
+let start = performance.now();
+debugger;
+let end = performance.now();
+
+if (end - start > 100) {
+  redirect()
+}
+
+document.addEventListener('mousedown', function (event) {
+  if (event.button === 2) {
+    redirect()
+  }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'F12') {
+        redirect()
+    }
+});
+*/
