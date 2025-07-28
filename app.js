@@ -65,6 +65,6 @@ app.use((err, req, res, next) => {
   return res.status(500).json({ error: err.message });
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
