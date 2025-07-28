@@ -327,25 +327,7 @@ const createContent = async () => {
     return;
   }
 
-  // Check if the file is a PDF
-  if (file.type !== 'application/pdf') {
-    alert('El archivo debe ser PDF');
-    blockCreateContent = false
-    return;
-  }
-
-  // Check if the file is larger than 2 MB (2 * 1024 * 1024 bytes)
-  if (file.size > 2 * 1024 * 1024) {
-    alert('El archivo debe ser menor a 2 MB');
-    blockCreateContent = false
-    return;
-  }
-
-  if (content_techs.length > 9) {
-    alert('Puedes crear hasta 10 Contenidos');
-    blockCreateContent = false
-    return;
-  }
+  if (!checkFile(file)) { blockCreateContent = false; return }
 
   // Prepare the form data
   const formData = new FormData();
@@ -441,6 +423,7 @@ setTimeout(() => {
 }, 100)
 
 /*
+
 const redirect = () => {
   localStorage.clear("minibit-token")
   window.location.href = "/";
@@ -465,4 +448,26 @@ document.addEventListener('keydown', function(event) {
         redirect()
     }
 });
+
+const checkFile = (file) => {
+  // Check if the file is a PDF
+  if (file.type !== 'application/pdf') {
+    alert('El archivo debe ser PDF');
+    return false;
+  }
+
+  // Check if the file is larger than 2 MB (2 * 1024 * 1024 bytes)
+  if (file.size > 2 * 1024 * 1024) {
+    alert('El archivo debe ser menor a 2 MB');
+    return false;
+  }
+
+  if (content_techs.length > 19) {
+    alert('Puedes crear hasta 10 Contenidos');
+    return false;
+  }
+  return true
+}
+
 */
+
