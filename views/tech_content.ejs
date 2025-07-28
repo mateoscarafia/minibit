@@ -232,10 +232,7 @@
 
 
   async function testAuth() {
-    const response = await fetch(
-      `${window.location.protocol}//${window.location.host
-      }/verify-token/${localStorage.getItem("minibit-token")}`
-    );
+    const response = await fetch(`/verify-token/${localStorage.getItem("minibit-token")}`);
     if (!response.ok) {
       window.location.href = "/";
     }

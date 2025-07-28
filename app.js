@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const cors = require('cors');
+const http = require('http');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -57,7 +58,7 @@ app.post("/create-user", createUser);
 app.post("/delete-user", deleteUser);
 app.post("/delete-content", deleteContent);
 app.post("/delete-result", deleteResult);
-app.post("/enable-content",statusContent)
+app.post("/enable-content", statusContent)
 app.post('/create-content', upload.single('pdfFile'), createContent);
 
 // Error handling middleware
@@ -65,6 +66,6 @@ app.use((err, req, res, next) => {
   return res.status(500).json({ error: err.message });
 });
 
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on http://0.0.0.0:${PORT}`);
-});
+var httpServer = http.createServer(app);
+
+httpServer.listen(3000);
