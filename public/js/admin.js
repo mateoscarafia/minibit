@@ -327,7 +327,7 @@ const createContent = async () => {
     return;
   }
 
-  //if (!checkFile(file)) { blockCreateContent = false; return }
+  if (!checkFile(file)) { blockCreateContent = false; return }
 
   // Prepare the form data
   const formData = new FormData();
