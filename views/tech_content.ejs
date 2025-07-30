@@ -285,8 +285,9 @@
   }
 
   setTimeout(() => {
+    const frame = document.getElementById("pdf-file-frame")
+    frame.src = `${window.location.protocol}//${window.location.host}/content-files/minibit_tutorial.pdf`
     document.getElementById("take-test-button-id").innerHTML = techs[0] ? "Evaluacion " + techs[0]?.name : "Sin contenido"
-    console.log(techs[0])
     contentId = techs[0]?.content_id || null
     showContentList()
   }, 100)
