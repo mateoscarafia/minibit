@@ -422,13 +422,14 @@ setTimeout(() => {
   showResults(results)
 }, 100)
 
-/*
+
 
 const redirect = () => {
   localStorage.clear("minibit-token")
   window.location.href = "/";
 }
 
+/*
 let start = performance.now();
 debugger;
 let end = performance.now();
@@ -448,6 +449,7 @@ document.addEventListener('keydown', function(event) {
         redirect()
     }
 });
+*/
 
 const checkFile = (file) => {
   // Check if the file is a PDF
@@ -469,5 +471,4 @@ const checkFile = (file) => {
   return true
 }
 
-*/
 

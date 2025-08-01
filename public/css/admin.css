@@ -241,12 +241,17 @@
  .tests-items-container {
    padding-top: 20px;
    width: 100%;
-   height: 690px;
+   margin-top: 30px;
+   height: 500px;
    display: flex;
    flex-direction: column;
    gap: 10px;
    align-items: center;
    overflow-y: scroll;
+ }
+
+  .tests-items-container::-webkit-scrollbar {
+   display: none;
  }
 
  .exam-results-item {
