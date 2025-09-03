@@ -221,13 +221,10 @@ const login = async (req, res) => {
       }
     );
 
-    console.log(results)
-
     if (!results) return res.status(400).send("Error");
 
     return res.json({ token: generateToken(results) });
   } catch (error) {
-    console.log(error)
     return res.status(400).send("Error");
   }
 };
@@ -250,7 +247,6 @@ const loginAdmin = async (req, res) => {
 
     return res.json({ token: generateTokenAdmin(results) });
   } catch (error) {
-    console.log(error)
     return res.status(400).send("Error");
   }
 };
