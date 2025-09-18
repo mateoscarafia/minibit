@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="game-container" id="game_container_id"></div>
-  <h1 id="counter">10</h1>
+  <h1 id="counter">20</h1>
 </body>
 <script src="/js/exam/_.js"></script>
 <script src="/js/exam/__t.js"></script>
@@ -22,13 +22,13 @@
   var questions = <%- JSON.stringify(questions) %>;
   const contentId = "<%= content_id %>"
   const gameContainer = document.getElementById("game_container_id")
-  var counter = 9;
+  var counter = 19;
   var question_number = 0;
   var cancelAnswer = false;
   var gameInterval = null;
 
-  /*
-  const saveAnswersLocalStorage = (ans) => {
+  
+  /*const saveAnswersLocalStorage = (ans) => {
     if (cancelAnswer) {
       alert("No puedes cambiar tu respuesta.")
       return;
@@ -151,20 +151,18 @@
 
   gameInterval = setInterval(() => {
     document.getElementById("counter").innerHTML = `${counter}`;
-    if (counter == 10) {
+    if (counter == 20) {
       question_number++;
       renderQuestion()
     }
     if (counter == 1) {
-      counter = 10;
+      counter = 20;
     } else {
       counter--;
     }
   }, 1000);
 
-  */
-
-  /*
+  
   const redirect = () => {
     window.location.href = "/content/" + localStorage.getItem("minibit-token");
   }
@@ -185,8 +183,8 @@
 
   document.addEventListener('keydown', function(event) {
     redirect()
-  });
-  */
+  });*/
+  
 
 </script>
 
