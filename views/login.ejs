@@ -3,7 +3,9 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Acid Labs</title>
+  <title>
+    <%= company.name ? company.name : 'Login' %>
+  </title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * {
@@ -241,26 +243,28 @@
 </head>
 
 <body>
-  <img class="minibit-logo" src="images/acidlogo.png">
-  <div class="login-container">
-    <div class="input-group" id="user_email_id">
-      <label for="username">Email</label>
-      <input type="text" id="email" placeholder="Ingrese su email" />
-    </div>
+  <% if (company.logo_image) { %>
+    <img class="minibit-logo" src="images/<%= company.logo_image %>">
+    <% } %>
+      <div class="login-container">
+        <div class="input-group" id="user_email_id">
+          <label for="username">Email</label>
+          <input type="text" id="email" placeholder="Ingrese su email" />
+        </div>
 
-    <div class="input-group" id="user_password_id">
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" placeholder="Ingrese su contraseña" />
-    </div>
+        <div class="input-group" id="user_password_id">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" placeholder="Ingrese su contraseña" />
+        </div>
 
-    <button onclick="login()" class="login-button" id="user_login_button_id">Login</button>
-    <button onclick="showAdminInput()" class="admin-button" id="admin_soy_admin_id">Soy Admin</button>
+        <button onclick="login()" class="login-button" id="user_login_button_id">Login</button>
+        <button onclick="showAdminInput()" class="admin-button" id="admin_soy_admin_id">Soy Admin</button>
 
-    <div class="input-group admin-group" id="admin-passphrase-group">
-      <input type="password" id="admin-passphrase" placeholder="Ingrese clave" />
-    </div>
-    <button onclick="loginAdmin()" class="admin-button hide-admin-button" id="admin_button_id">Login Admin</button>
-  </div>
+        <div class="input-group admin-group" id="admin-passphrase-group">
+          <input type="password" id="admin-passphrase" placeholder="Ingrese clave" />
+        </div>
+        <button onclick="loginAdmin()" class="admin-button hide-admin-button" id="admin_button_id">Login Admin</button>
+      </div>
 </body>
 
 </html>

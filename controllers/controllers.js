@@ -3,13 +3,18 @@ const md = new MarkdownIt();
 const fs = require("fs");
 const path = require("path");
 const { sequelize } = require("../utils/database");
-const { generateToken, secretKey, decodeToken, generateTokenAdmin, transformQuestions } = require("../utils/utils");
+const {
+  generateToken,
+  secretKey,
+  decodeToken,
+  generateTokenAdmin,
+  transformQuestions,
+} = require("../utils/utils");
 const jwt = require("jsonwebtoken");
 
 const saveExamResult = async (req, res) => {
-
   try {
-    const decoded = decodeToken(req.headers.token)
+    const decoded = decodeToken(req.headers.token);
     const userAnswers = req.body.userAnswers;
     const contentId = req.body.contentId;
     var questions_answered_ok = 0;
@@ -99,18 +104,23 @@ const saveExamResult = async (req, res) => {
         },
         type: sequelize.QueryTypes.SELECT,
       }
-    )
+    );
 
     userAnswers.forEach((answer) => {
-      const splitted = answer.split("---")
-      const id = Number(splitted[0])
-      const value = splitted[1]
-      if ((questions_correct_answers.filter((asw) => asw.id == id && asw.correct_answer == value)).length) {
-        questions_answered_ok++
+      const splitted = answer.split("---");
+      const id = Number(splitted[0]);
+      const value = splitted[1];
+      if (
+        questions_correct_answers.filter(
+          (asw) => asw.id == id && asw.correct_answer == value
+        ).length
+      ) {
+        questions_answered_ok++;
       }
-    })
+    });
 
-    const finalResult = (questions_answered_ok * 100) / questions_correct_answers.length;
+    const finalResult =
+      (questions_answered_ok * 100) / questions_correct_answers.length;
     sequelize.query(
       `DELETE FROM user_tech_skills WHERE user_id=:user_id AND content_id=:content_id;`,
       {
@@ -135,13 +145,34 @@ const saveExamResult = async (req, res) => {
     );
     return res.json({ resultado: Math.floor(finalResult) });
   } catch (err) {
-    res.status(500).json()
+    res.status(500).json();
   }
+};
+
+const loginPage = async (req, res) => {
+  const company_slug = req.params.company_slug;
+
+  const company = company_slug
+    ? await sequelize.query(
+        `SELECT name, logo_image
+      FROM company WHERE slug = :company_slug`,
+        {
+          replacements: {
+            company_slug: company_slug,
+          },
+          type: sequelize.QueryTypes.SELECT,
+        }
+      )
+    : { name: "", logo_image: "" };
+
+  return res.render("login", {
+    company: company[0] || { name: "", logo_image: "" },
+  });
 };
 
 const contentPage = async (req, res) => {
   const token = req.params.token;
-  const decoded = decodeToken(token)
+  const decoded = decodeToken(token);
 
   const techs = await sequelize.query(
     `SELECT *
@@ -150,6 +181,17 @@ const contentPage = async (req, res) => {
     {
       replacements: {
         company_id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  const company = await sequelize.query(
+    `SELECT name 
+      FROM company WHERE id = :id`,
+    {
+      replacements: {
+        id: decoded.companyId,
       },
       type: sequelize.QueryTypes.SELECT,
     }
@@ -192,8 +234,7 @@ const contentPage = async (req, res) => {
         return null;
       }
     })
-  ).then(results => results.filter(Boolean));
-
+  ).then((results) => results.filter(Boolean));
 
   const [{ background_image }] = await sequelize.query(
     `SELECT background_image from company
@@ -205,7 +246,13 @@ const contentPage = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  res.render("tech_content", { techs: tech_parsed, background_image: background_image, user_email: decoded.email, user_exams: user_exams });
+  res.render("tech_content", {
+    techs: tech_parsed,
+    background_image: background_image,
+    user_email: decoded.email,
+    user_exams: user_exams,
+    company: company[0] || { name: "" },
+  });
 };
 
 const login = async (req, res) => {
@@ -241,8 +288,6 @@ const loginAdmin = async (req, res) => {
       }
     );
 
-
-
     if (!results) return res.status(400).send("Error");
 
     return res.json({ token: generateTokenAdmin(results) });
@@ -260,9 +305,8 @@ const verifyToken = async (req, res) => {
   });
 };
 
-
 const createUser = async (req, res) => {
-  const decoded = decodeToken(req.headers.token)
+  const decoded = decodeToken(req.headers.token);
   const email = req.body.email;
   const password = req.body.password;
   try {
@@ -284,7 +328,7 @@ const createUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const decoded = decodeToken(req.headers.token)
+  const decoded = decodeToken(req.headers.token);
   const userId = req.body.userId;
   try {
     await sequelize.query(
@@ -293,26 +337,22 @@ const deleteUser = async (req, res) => {
         replacements: {
           id: Number(userId),
           company_id: decoded.companyId,
-        }
+        },
       }
     );
-    await sequelize.query(
-      "DELETE FROM user_tech_skills WHERE user_id = :id",
-      {
-        replacements: {
-          id: Number(userId),
-        }
-      }
-    );
+    await sequelize.query("DELETE FROM user_tech_skills WHERE user_id = :id", {
+      replacements: {
+        id: Number(userId),
+      },
+    });
     return res.status(200).send({});
   } catch (err) {
     return res.status(500).send("Error");
   }
 };
 
-
 const checkExamDate = async (req, res) => {
-  const decoded = decodeToken(req.body.token)
+  const decoded = decodeToken(req.body.token);
   const [results] = await sequelize.query(
     "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND content_id = :content_id ORDER BY id DESC LIMIT 1",
     {
@@ -323,15 +363,18 @@ const checkExamDate = async (req, res) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-  if (!results) { return res.status(200).send({}); }
+  if (!results) {
+    return res.status(200).send({});
+  }
   const referenceDate = new Date(results.created);
   const currentDate = new Date();
   const oneWeekLater = new Date(referenceDate);
   oneWeekLater.setDate(oneWeekLater.getDate() + 7);
-  if (currentDate >= oneWeekLater) { return res.status(200).send({}); }
+  if (currentDate >= oneWeekLater) {
+    return res.status(200).send({});
+  }
   return res.status(400).send({});
 };
-
 
 const saveExamZeroResult = async (userId, contentId) => {
   await sequelize.query(
@@ -346,11 +389,11 @@ const saveExamZeroResult = async (userId, contentId) => {
       type: sequelize.QueryTypes.INSERT,
     }
   );
-}
+};
 
 const adminPage = async (req, res) => {
-  const decoded = decodeToken(req.params.token)
-  if (!decoded) return res.render("login")
+  const decoded = decodeToken(req.params.token);
+  if (!decoded) return res.render("login");
 
   const results = await sequelize.query(
     `SELECT users.*, user_tech_skills.*, user_tech_skills.id as result_id
@@ -366,12 +409,12 @@ const adminPage = async (req, res) => {
   );
 
   const parsed = results.map((res) => {
-    const date = new Date(res.created).toLocaleDateString('en-GB');
+    const date = new Date(res.created).toLocaleDateString("en-GB");
     return {
       ...res,
       created: date,
-    }
-  })
+    };
+  });
   const users = await sequelize.query(
     `SELECT *
       FROM users
@@ -416,7 +459,7 @@ const adminPage = async (req, res) => {
       return {
         name: content.name,
         id: content.content_id,
-        questions
+        questions,
       };
     })
   );
@@ -432,13 +475,33 @@ const adminPage = async (req, res) => {
     }
   );
 
-  return res.render("admin", { results: parsed, users: users, content_question: content_question, background_image: background_image, content_techs: content_techs });
-}
+  const company_data = await sequelize.query(
+    `SELECT name 
+      FROM company WHERE id = :id`,
+    {
+      replacements: {
+        id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  return res.render("admin", {
+    results: parsed,
+    users: users,
+    content_question: content_question,
+    background_image: background_image,
+    content_techs: content_techs,
+    company_data: company_data[0] || { name: "" },
+  });
+};
 
 const createContent = async (req, res) => {
-  const decoded = decodeToken(req.headers.token)
+  const decoded = decodeToken(req.headers.token);
   if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded or invalid file type' });
+    return res
+      .status(400)
+      .json({ error: "No file uploaded or invalid file type" });
   }
 
   const [content] = await sequelize.query(
@@ -467,10 +530,10 @@ const createContent = async (req, res) => {
     name: req.body.contentName,
     filename: req.file.filename,
   });
-}
+};
 
 const postQuestions = async (req, res) => {
-  const decoded = decodeToken(req.headers.token)
+  const decoded = decodeToken(req.headers.token);
   req.body.payload.forEach((q) => {
     if (q.id) {
       sequelize.query(
@@ -520,119 +583,116 @@ const postQuestions = async (req, res) => {
         }
       );
     }
-  })
+  });
 
   return res.json({});
-
-}
+};
 
 const deleteResult = (req, res) => {
-  const decoded = decodeToken(req.headers.token)
-  sequelize.query(
-    `DELETE from user_tech_skills where id=:id`,
-    {
+  const decoded = decodeToken(req.headers.token);
+  sequelize
+    .query(`DELETE from user_tech_skills where id=:id`, {
       replacements: {
         id: req.body.id,
       },
       type: sequelize.QueryTypes.DELETE,
-    }
-  ).then(() => {
-    return res.json({});
-  }).catch(() => {
-    return res.status(500).json({});
-  })
-}
+    })
+    .then(() => {
+      return res.json({});
+    })
+    .catch(() => {
+      return res.status(500).json({});
+    });
+};
 
 const statusContent = (req, res) => {
-  const decoded = decodeToken(req.headers.token)
-  sequelize.query(
-    `UPDATE content set enable=:status where id=:id`,
-    {
+  const decoded = decodeToken(req.headers.token);
+  sequelize
+    .query(`UPDATE content set enable=:status where id=:id`, {
       replacements: {
         id: req.body.id,
-        status: req.body.status ? null : "1"
+        status: req.body.status ? null : "1",
       },
       type: sequelize.QueryTypes.UPDATE,
-    }
-  ).then(() => {
-    return res.json({});
-  }).catch(() => {
-    return res.status(500).json({});
-  })
-}
+    })
+    .then(() => {
+      return res.json({});
+    })
+    .catch(() => {
+      return res.status(500).json({});
+    });
+};
 
 const deleteContent = (req, res) => {
-  const decoded = decodeToken(req.headers.token)
+  const decoded = decodeToken(req.headers.token);
 
-  sequelize.query(
-    `DELETE from company_content Where company_id=:company_id and content_id=:content_id`,
-    {
-      replacements: {
-        content_id: req.body.contentId,
-        company_id: decoded.companyId,
-      },
-      type: sequelize.QueryTypes.DELETE,
-    }
-  ).then(async () => {
-
-    const [{ filename }] = await sequelize.query(
-      `SELECT filename from content Where id=:content_id`,
+  sequelize
+    .query(
+      `DELETE from company_content Where company_id=:company_id and content_id=:content_id`,
       {
         replacements: {
           content_id: req.body.contentId,
+          company_id: decoded.companyId,
         },
-        type: sequelize.QueryTypes.SELECT,
+        type: sequelize.QueryTypes.DELETE,
       }
     )
+    .then(async () => {
+      const [{ filename }] = await sequelize.query(
+        `SELECT filename from content Where id=:content_id`,
+        {
+          replacements: {
+            content_id: req.body.contentId,
+          },
+          type: sequelize.QueryTypes.SELECT,
+        }
+      );
 
-    const filePath = path.join(__dirname, '../public/content-files/' + filename);
+      const filePath = path.join(
+        __dirname,
+        "../public/content-files/" + filename
+      );
 
-    fs.unlink(filePath, (err) => {
-      if (err) console.log(err)
-      console.log('File deleted successfully');
+      fs.unlink(filePath, (err) => {
+        if (err) console.log(err);
+        console.log("File deleted successfully");
+      });
+
+      sequelize.query(`DELETE from content Where id=:content_id`, {
+        replacements: {
+          content_id: req.body.contentId,
+        },
+        type: sequelize.QueryTypes.DELETE,
+      });
+
+      sequelize.query(`DELETE from questions Where content_id=:content_id`, {
+        replacements: {
+          content_id: req.body.contentId,
+        },
+        type: sequelize.QueryTypes.DELETE,
+      });
+
+      sequelize.query(
+        `DELETE from user_tech_skills Where content_id=:content_id`,
+        {
+          replacements: {
+            content_id: req.body.contentId,
+          },
+          type: sequelize.QueryTypes.DELETE,
+        }
+      );
+
+      return res.json({});
+    })
+    .catch(() => {
+      return res.status(500).json({});
     });
-
-    sequelize.query(
-      `DELETE from content Where id=:content_id`,
-      {
-        replacements: {
-          content_id: req.body.contentId,
-        },
-        type: sequelize.QueryTypes.DELETE,
-      }
-    )
-
-    sequelize.query(
-      `DELETE from questions Where content_id=:content_id`,
-      {
-        replacements: {
-          content_id: req.body.contentId,
-        },
-        type: sequelize.QueryTypes.DELETE,
-      }
-    )
-
-    sequelize.query(
-      `DELETE from user_tech_skills Where content_id=:content_id`,
-      {
-        replacements: {
-          content_id: req.body.contentId,
-        },
-        type: sequelize.QueryTypes.DELETE,
-      }
-    )
-
-    return res.json({});
-
-  }).catch(() => {
-    return res.status(500).json({});
-  })
-}
+};
 
 const loadExamData = async (req, res) => {
-  const decoded = decodeToken(req.params.token)
+  const decoded = decodeToken(req.params.token);
 
-  const contentId = req.params.content_id
+  const contentId = req.params.content_id;
   const questions = await sequelize.query(
     `SELECT id, question, answer_a, answer_b, answer_c, answer_d, correct_answer
       FROM questions
@@ -651,7 +711,7 @@ const loadExamData = async (req, res) => {
       },
       type: sequelize.QueryTypes.SELECT,
     }
-  )
+  );
 
   if (!questions.length) return res.redirect("/content/" + req.params.token);
 
@@ -689,11 +749,28 @@ const loadExamData = async (req, res) => {
     }
   );
 
-  return res.render("exam", { questions: questions, background_image: background_image, content_id: contentId });
-}
+  const company = await sequelize.query(
+    `SELECT name 
+      FROM company WHERE id = :id`,
+    {
+      replacements: {
+        id: decoded.companyId,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  return res.render("exam", {
+    questions: questions,
+    background_image: background_image,
+    content_id: contentId,
+    company: company[0] || { name: "" },
+  });
+};
 
 module.exports = {
   contentPage,
+  loginPage,
   login,
   loginAdmin,
   verifyToken,
@@ -707,5 +784,5 @@ module.exports = {
   deleteContent,
   loadExamData,
   deleteResult,
-  statusContent
+  statusContent,
 };

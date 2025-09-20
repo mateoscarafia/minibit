@@ -1,8 +1,8 @@
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
-const cors = require('cors');
-const http = require('http');
+const cors = require("cors");
+const http = require("http");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,7 +22,8 @@ const {
   deleteContent,
   loadExamData,
   deleteResult,
-  statusContent
+  statusContent,
+  loginPage,
 } = require("./controllers/controllers");
 
 const { upload } = require("./utils/utils");
@@ -41,9 +42,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /// ENDPOINTS  //////////////////////////////////////////
 // GET ENDPOINTS //
 app.get("/exam/:content_id/:token", loadExamData);
-app.get("/", (req, res) => {
-  res.render("login");
-});
+app.get("/", loginPage);
+app.get("/:company_slug", loginPage);
 app.get("/content/:token", contentPage);
 app.get("/verify-token/:token", verifyToken);
 app.get("/admin/:token", adminPage);
@@ -58,8 +58,8 @@ app.post("/create-user", createUser);
 app.post("/delete-user", deleteUser);
 app.post("/delete-content", deleteContent);
 app.post("/delete-result", deleteResult);
-app.post("/enable-content", statusContent)
-app.post('/create-content', upload.single('pdfFile'), createContent);
+app.post("/enable-content", statusContent);
+app.post("/create-content", upload.single("pdfFile"), createContent);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

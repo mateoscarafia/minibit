@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.42, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.43, for Linux (x86_64)
 --
 -- Host: localhost    Database: minibit_study
 -- ------------------------------------------------------
--- Server version	8.0.42-0ubuntu0.24.04.1
+-- Server version	8.0.43-0ubuntu0.24.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -27,6 +27,8 @@ CREATE TABLE `company` (
   `name` varchar(255) NOT NULL,
   `pass_phrase` varchar(255) NOT NULL,
   `background_image` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) NOT NULL,
+  `logo_image` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -37,7 +39,7 @@ CREATE TABLE `company` (
 
 LOCK TABLES `company` WRITE;
 /*!40000 ALTER TABLE `company` DISABLE KEYS */;
-INSERT INTO `company` VALUES (1,'ACID LABS','acid_labs_passphrase','acid_labs.jpg');
+INSERT INTO `company` VALUES (1,'ACID LABS','acid_labs_passphrase','acid_labs.jpg','acid_labs','acid_labs_logo.png');
 /*!40000 ALTER TABLE `company` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,7 +90,7 @@ CREATE TABLE `content` (
 
 LOCK TABLES `content` WRITE;
 /*!40000 ALTER TABLE `content` DISABLE KEYS */;
-INSERT INTO `content` VALUES (68,'Python','3432016090.pdf','1'),(69,'JS','2945066423.pdf',NULL);
+INSERT INTO `content` VALUES (68,'Python','3432016090.pdf','1'),(69,'JS','2945066423.pdf','1');
 /*!40000 ALTER TABLE `content` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -139,7 +141,7 @@ CREATE TABLE `user_tech_skills` (
   `safety_save` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=148 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,7 +150,7 @@ CREATE TABLE `user_tech_skills` (
 
 LOCK TABLES `user_tech_skills` WRITE;
 /*!40000 ALTER TABLE `user_tech_skills` DISABLE KEYS */;
-INSERT INTO `user_tech_skills` VALUES (145,35,100,'2025-07-27 14:23:59',68,NULL),(147,34,0,'2025-07-28 14:35:54',68,NULL);
+INSERT INTO `user_tech_skills` VALUES (145,35,100,'2025-07-27 14:23:59',68,NULL),(153,34,0,'2025-09-18 12:42:00',68,NULL),(156,34,50,'2025-09-20 21:48:32',69,NULL);
 /*!40000 ALTER TABLE `user_tech_skills` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,7 +169,7 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -176,7 +178,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (34,'mateo@gmail.com','123456',1,'2025-07-27 14:01:01'),(35,'mateoscarafia@gmail.com','123456',1,'2025-07-27 14:01:13'),(36,'catu@gmail.com','123456',1,'2025-07-27 14:13:38'),(38,'dfsdg','fgdfgdfgd',1,'2025-07-27 14:22:47'),(39,'mat@gmail.com','123456',1,'2025-07-27 14:23:02');
+INSERT INTO `users` VALUES (34,'mateo@gmail.com','123456',1,'2025-07-27 14:01:01'),(35,'mateoscarafia@gmail.com','123456',1,'2025-07-27 14:01:13'),(36,'catu@gmail.com','123456',1,'2025-07-27 14:13:38'),(39,'mat@gmail.com','123456',1,'2025-07-27 14:23:02'),(40,'ssss','sss',1,'2025-08-01 00:42:42');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -189,4 +191,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-28 18:49:38
+-- Dump completed on 2025-09-20 18:51:12

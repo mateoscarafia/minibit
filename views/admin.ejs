@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Acid Labs</title>
+  <title>
+    <%= company_data.name %>
+  </title>
   <link rel="stylesheet" href="/css/admin.css" />
 </head>
 
@@ -89,7 +91,7 @@
 
   </div>
 </body>
- <!--<script src="/js/exam/_o_.js"></script>-->
+<!--<script src="/js/exam/_o_.js"></script>-->
 <script src="/js/admin.js"></script>
 <script>/* VARIABLES GLOBALES Y SETEO INICIAL */
   document.body.style.background = 'url("/images/<%= background_image %>") no-repeat center center fixed';
@@ -99,4 +101,5 @@
   var content_techs = <%- JSON.stringify(content_techs) %>;
   var users = <%- JSON.stringify(users) %>;
   var results = <%- JSON.stringify(results) %>;</script>
+
 </html>
