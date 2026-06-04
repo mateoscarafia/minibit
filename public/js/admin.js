@@ -82,8 +82,10 @@ const showResume = (res) => {
             ques.question
           }</div>
          <div class="resumen-results-answer">
-         ${ques[`answer_${filtered[ques.id].toLowerCase()}`]} ❌
-         <span class="resumen-results-answer-correct"> Correcta: ${
+         ${
+           ques[`answer_${filtered[ques.id].toLowerCase()}`] || "No respondió"
+         } ❌
+         <span class="resumen-results-answer-correct"> <br/> Correcta: ${
            ques[`answer_${ques["correct_answer"].toLowerCase()}`]
          } </span>
          </div>

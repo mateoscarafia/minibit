@@ -117,8 +117,30 @@ const saveExamResult = async (req, res) => {
         ).length
       ) {
         questions_answered_ok++;
-      } else {
-        bad_answered_questions = bad_answered_questions + answer + "/";
+      }
+    });
+
+    questions_correct_answers.forEach((correct, index) => {
+      let wrongAns = 2;
+      userAnswers.forEach((answer) => {
+        const splitted = answer.split("---");
+        const id = Number(splitted[0]);
+        const value = splitted[1];
+        if (wrongAns == 2) {
+          if (correct.id == id && correct.correct_answer == value) {
+            wrongAns = 0; // respondio bien
+          }
+          if (correct.id == id && correct.correct_answer != value) {
+            wrongAns = 1; // respondio mal
+            bad_answered_questions =
+              bad_answered_questions + id + "---" + value + "/";
+          }
+        }
+      });
+      if (wrongAns == 2) {
+        // significa que no respondio
+        bad_answered_questions =
+          bad_answered_questions + correct.id + "---" + "Z" + "/";
       }
     });
 
