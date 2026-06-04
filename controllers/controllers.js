@@ -18,6 +18,7 @@ const saveExamResult = async (req, res) => {
     const userAnswers = req.body.userAnswers;
     const contentId = req.body.contentId;
     var questions_answered_ok = 0;
+    var bad_answered_questions = "";
 
     const [results] = await sequelize.query(
       "SELECT * FROM user_tech_skills WHERE user_id = :user_id AND content_id = :content_id AND safety_save IS NULL ORDER BY id DESC LIMIT 1",
@@ -116,6 +117,8 @@ const saveExamResult = async (req, res) => {
         ).length
       ) {
         questions_answered_ok++;
+      } else {
+        bad_answered_questions = bad_answered_questions + answer + "/";
       }
     });
 
@@ -131,20 +134,23 @@ const saveExamResult = async (req, res) => {
         type: sequelize.QueryTypes.DELETE,
       }
     );
+
     await sequelize.query(
-      `INSERT INTO user_tech_skills (user_id, content_id, score) 
-        VALUES (:user_id, :content_id,  :score);`,
+      `INSERT INTO user_tech_skills (user_id, content_id, score, bad_answers) 
+        VALUES (:user_id, :content_id,  :score, :bad_answers);`,
       {
         replacements: {
           user_id: decoded.userId,
           content_id: Number(contentId),
           score: Math.floor(finalResult),
+          bad_answers: bad_answered_questions,
         },
         type: sequelize.QueryTypes.INSERT,
       }
     );
     return res.json({ resultado: Math.floor(finalResult) });
   } catch (err) {
+    console.log(err);
     res.status(500).json();
   }
 };
