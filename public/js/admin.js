@@ -23,9 +23,7 @@ const showResults = (res_inner) => {
       const content_name = content_techs
         .filter((ctn) => ctn.content_id == res.content_id)
         .pop()?.name;
-      resultContainer.innerHTML += `<div class="exam-results-item" onclick=showResume(${JSON.stringify(
-        res
-      )})>
+      resultContainer.innerHTML += `<div class="exam-results-item">
             <span>
               ${res.email}
             </span>
@@ -35,9 +33,9 @@ const showResults = (res_inner) => {
             <span class="date-span">
                ${res.created}
             </span>
-            <span style="width:50px; text-align: center" class=${defineClass(
-              res.score
-            )}>
+            <span style="width:50px; text-align: center" onclick=showResume(${JSON.stringify(
+              res
+            )}) class=${defineClass(res.score)}>
                ${res.score}%
             </span>
             <span onclick='deleteResult("${res.id}")'>x</span>
