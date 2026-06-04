@@ -101,8 +101,8 @@ const showResume = (res) => {
     });
     resumeContainer.innerHTML = resultHTML;
   } catch (err) {
-    hideResume()
-    alert("Algo salio mal")
+    hideResume();
+    alert("Algo salio mal");
     console.error(err);
   }
 };
@@ -263,7 +263,11 @@ const showTestContent = () => {
 const displayQuestionForm = (questions) => {
   if (!questions) return;
   const testContainer = document.getElementById("form-question-container-id");
-  testContainer.innerHTML = ``;
+  testContainer.innerHTML = `<textarea id="questions_text" ></textarea>`;
+
+  document.getElementById(`questions_text`).value = JSON.stringify(questions);
+
+  /*
   [...Array(50).keys()].forEach((item, index) => {
     testContainer.innerHTML += `
         <div class="answer-block">
@@ -302,7 +306,7 @@ const displayQuestionForm = (questions) => {
       document.getElementById(`correct_answer_${index}_id`).value =
         questions[index].correct_answer;
     }
-  });
+  });*/
 };
 
 const openQuestionModal = (id) => {
@@ -316,7 +320,7 @@ const postQuestions = async (id) => {
   const filteredContent = content_question
     .filter((cnt) => cnt.id == contentId)
     .pop();
-  const payload = [...Array(50).keys()].map((item, index) => {
+  /*const payload = [...Array(50).keys()].map((item, index) => {
     return {
       id: filteredContent.questions[index]?.id || null,
       question: document.getElementById(`question_${index}_id`).value,
@@ -327,7 +331,10 @@ const postQuestions = async (id) => {
       correct_answer:
         document.getElementById(`correct_answer_${index}_id`).value || "",
     };
-  });
+  });*/
+
+  const payload = document.getElementById("questions_text").value;
+
   fetch("/post-questions", {
     method: "POST",
     headers: {
@@ -344,7 +351,7 @@ const postQuestions = async (id) => {
         alert("Lo sentimos. Algo salió mal.");
       }
       alert("Respuestas guardadas con exito.");
-      filteredContent.questions = payload;
+      filteredContent.questions = JSON.parse(payload);
     })
     .catch(() => {
       alert("Lo sentimos. Algo salió mal.");

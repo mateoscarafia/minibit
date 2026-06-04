@@ -548,3 +548,9 @@ textarea {
   font-style: normal;
   color: dimgrey;
 }
+
+#questions_text {
+  width: 90%;
+  height: 90%;
+  margin-left: 20px;
+}

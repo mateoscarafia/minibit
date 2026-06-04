@@ -539,37 +539,21 @@ const createContent = async (req, res) => {
 };
 
 const postQuestions = async (req, res) => {
-  const decoded = decodeToken(req.headers.token);
-  req.body.payload.forEach((q) => {
-    if (q.id) {
-      sequelize.query(
-        `UPDATE questions 
-            SET 
-              content_id = :content_id,
-              company_id = :company_id,
-              question = :question,
-              answer_a = :answer_a,
-              answer_b = :answer_b,
-              answer_c = :answer_c,
-              answer_d = :answer_d,
-              correct_answer = :correct_answer
-            WHERE id = :id`,
-        {
-          replacements: {
-            id: q.id,
-            content_id: req.body.contentId,
-            company_id: decoded.companyId,
-            question: q.question,
-            answer_a: q.answer_a,
-            answer_b: q.answer_b,
-            answer_c: q.answer_c,
-            answer_d: q.answer_d,
-            correct_answer: q.correct_answer,
-          },
-          type: sequelize.QueryTypes.UPDATE,
-        }
-      );
-    } else {
+  try {
+    const decoded = decodeToken(req.headers.token);
+
+    await sequelize.query(
+      `DELETE from questions where content_id=:content_id and company_id=:company_id`,
+      {
+        replacements: {
+          content_id: req.body.contentId,
+          company_id: decoded.companyId,
+        },
+        type: sequelize.QueryTypes.DELETE,
+      }
+    );
+
+    JSON.parse(req.body.payload).forEach((q) => {
       sequelize.query(
         `INSERT INTO questions 
     (content_id,company_id, question, answer_a, answer_b, answer_c, answer_d, correct_answer ) 
@@ -588,10 +572,12 @@ const postQuestions = async (req, res) => {
           type: sequelize.QueryTypes.INSERT,
         }
       );
-    }
-  });
+    });
 
-  return res.json({});
+    return res.json({});
+  } catch (err) {
+    return res.status(400).json({});
+  }
 };
 
 const deleteResult = (req, res) => {
