@@ -283,7 +283,7 @@
   const setTechContent = (file, name, id) => {
     contentId = id;
     const frame = document.getElementById("pdf-file-frame")
-    frame.src = `${window.location.protocol}//${window.location.host}/content-files/${file}`
+    frame.src = `${window.location.protocol}//${window.location.host}/content-files/${tech[0]?.filename || ""}`
     document.getElementById("take-test-button-id").innerHTML = "Evaluacion " + name
   }
 
