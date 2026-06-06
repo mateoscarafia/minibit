@@ -517,6 +517,18 @@ textarea {
   }
 }
 
+#resumen-container-cross-exit{
+  top: 20px;
+  right: 20px;
+  font-size: 20px !important;
+  margin-left: 99%;
+  cursor: pointer;
+}
+
+#resumen-container-cross-exit:hover{
+  top: 20px;
+}
+
 .resume-container-class::-webkit-scrollbar {
   display: none;
 }
@@ -553,4 +565,8 @@ textarea {
   width: 90%;
   height: 90%;
   margin-left: 20px;
+}
+
+.open-resume-span:hover {
+  font-size: 14px !important;
 }

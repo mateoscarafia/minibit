@@ -33,11 +33,14 @@ const showResults = (res_inner) => {
             <span class="date-span">
                ${res.created}
             </span>
-            <span style="width:50px; text-align: center" onclick=showResume(${JSON.stringify(
-              res
-            )}) class=${defineClass(res.score)}>
+            <span style="width:50px; text-align: center" class=${defineClass(
+              res.score
+            )}>
                ${res.score}%
             </span>
+            <span class="open-resume-span" style="width:24px;" onclick=showResume(${JSON.stringify(
+              res
+            )})>📜</span>
             <span onclick='deleteResult("${res.id}")'>x</span>
           </div>`;
     }
@@ -69,7 +72,7 @@ const showResume = (res) => {
       filtered[id] = value;
     });
 
-    var resultHTML = `<h3 onclick=hideResume()>${exam.name}</h3><br/><h5>Respuestas</h5><br/>`;
+    var resultHTML = `<div id="resumen-container-cross-exit" onclick=hideResume()>x</div><h3>${exam.name}</h3><br/><h5>Respuestas</h5><br/>`;
 
     exam.questions.forEach((ques, index) => {
       if (!ques.question) return;
@@ -265,7 +268,12 @@ const displayQuestionForm = (questions) => {
   const testContainer = document.getElementById("form-question-container-id");
   testContainer.innerHTML = `<textarea id="questions_text" ></textarea>`;
 
-  document.getElementById(`questions_text`).value = JSON.stringify(questions);
+  const filteredQuestions = questions.map(
+    ({ id, content_id, company_id, ...resto }) => resto
+  );
+
+  document.getElementById(`questions_text`).value =
+    JSON.stringify(filteredQuestions);
 
   /*
   [...Array(50).keys()].forEach((item, index) => {

@@ -598,6 +598,7 @@ const postQuestions = async (req, res) => {
 
     return res.json({});
   } catch (err) {
+    console.log(err)
     return res.status(400).json({});
   }
 };
