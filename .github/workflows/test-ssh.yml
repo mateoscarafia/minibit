@@ -7,6 +7,8 @@ on:
 jobs:
   test-ssh:
     runs-on: ubuntu-latest
+    # 👇 IMPORTANTE: Especifica el entorno donde están los secrets
+    environment: minibit_prod
     steps:
       - name: Test SSH Connection
         uses: appleboy/ssh-action@v1.0.0
