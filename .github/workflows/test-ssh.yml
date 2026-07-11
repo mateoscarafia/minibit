@@ -5,19 +5,16 @@ on:
     branches: [ master ]
 
 jobs:
-  test-ssh:
+  deploy:
     runs-on: ubuntu-latest
-    # 👇 IMPORTANTE: Especifica el entorno donde están los secrets
+
+    # This is required
     environment: minibit_prod
+
     steps:
-      - name: Test SSH Connection
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "¡Conexión exitosa!"
-            whoami
-            pwd
-            ls -la
+      - uses: actions/checkout@v4
+
+      - name: Show variables
+        run: |
+          echo "Server: ${{ secrets.SERVER_IP }}"
+          echo "User: ${{ secrets.SERVER_USER }}"
