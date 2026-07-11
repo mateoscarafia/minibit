@@ -9,8 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     # This is required
-    environment: Configure minibit_prod
+    environment: minibit_prod
   
+
     steps:
       - uses: actions/checkout@v4
 
