@@ -18,4 +18,4 @@ jobs:
       - name: Show variables
         run: |
           echo "Server: ${{ secrets.SERVER_IP }}"
-          echo "User: ${{ secrets.SERVER_USER }}"
+          echo "User: ${{ secrets.SERVER_IP }}"
