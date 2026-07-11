@@ -2,15 +2,15 @@ name: Test SSH Connection
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     # This is required
-    environment: minibit_prod
-  
+    environment:
+      name: minibit_prod
 
     steps:
       - uses: actions/checkout@v4
