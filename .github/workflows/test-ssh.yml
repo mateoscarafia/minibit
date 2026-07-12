@@ -12,6 +12,9 @@ jobs:
   check-secrets:
     runs-on: ubuntu-latest
   
+
+
+  
     env:
       MY_VAR_ENV: ${{ vars.MY_VAR }}
     
