@@ -1,0 +1,26 @@
+name: Test SSH Connection
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  test-ssh:
+    runs-on: ubuntu-latest
+    environment: minibit_prod
+
+    steps:
+      - name: Test SSH Connection
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "✅ Conexión SSH exitosa!"
+            echo "Server: $(hostname)"
+            echo "IP: $(hostname -I)"
+            echo "Usuario: $(whoami)"
+            echo "Directorio: $(pwd)"
+            echo "Kernel: $(uname -a)"
