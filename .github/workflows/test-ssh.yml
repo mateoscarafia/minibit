@@ -1,23 +1,18 @@
-name: Test SSH Connection
+name: Greeting on variable day
 
 on:
-  push:
-    branches: [ master ]
+  workflow_dispatch
+
+env:
+  DAY_OF_WEEK: Monday
 
 jobs:
-  test-ssh:
+  greeting_job:
     runs-on: ubuntu-latest
-    
+    env:
+      Greeting: Hello
     steps:
-      - name: Test SSH Connection
-        uses: appleboy/ssh-action@v1.0.0
-        run: echo "$MY_VAR!"
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "¡Conexión exitosa!"
-            whoami
-            pwd
-            ls -la
+      - name: "Say Hello Mona it's Monday"
+        run: echo "$MY_VAR !"
+        env:
+          First_Name: Mona
