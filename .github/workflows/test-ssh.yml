@@ -22,12 +22,12 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          echo "Global: $MY_VAR_ENV"
-          echo "Job: $MY_VAR"
         
         run: |
           echo "=== Verificando secrets $MY_VAR ==="
+
+          Global: $MY_VAR_ENV
+          Job: $MY_VAR
           
           # Verificar SERVER_IP
           if [ -z "$SERVER_IP" ]; then
