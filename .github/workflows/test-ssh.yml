@@ -1,12 +1,13 @@
-name: Greeting on variable day
+name: Check secrets
+run: |
+  if [ -z "${{ secrets.SERVER_IP }}" ]; then
+    echo "SERVER_IP is EMPTY"
+  else
+    echo "SERVER_IP exists"
+  fi
 
-jobs:
-  greeting_job:
-    runs-on: ubuntu-latest
-    env:
-      Greeting: Hello
-    steps:
-      - name: "Say Hello Mona it's Monday"
-        run: echo "$MY_VAR !"
-        env:
-          First_Name: Mona
+  if [ -z "${{ secrets.SERVER_USER }}" ]; then
+    echo "SERVER_USER is EMPTY"
+  else
+    echo "SERVER_USER exists"
+  fi
