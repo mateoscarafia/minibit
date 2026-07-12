@@ -1,13 +1,42 @@
 name: Check secrets
-run: |
-  if [ -z "${{ secrets.SERVER_IP }}" ]; then
-    echo "SERVER_IP is EMPTY"
-  else
-    echo "SERVER_IP exists"
-  fi
 
-  if [ -z "${{ secrets.SERVER_USER }}" ]; then
-    echo "SERVER_USER is EMPTY"
-  else
-    echo "SERVER_USER exists"
-  fi
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  check-secrets:
+    runs-on: ubuntu-latest
+    
+    # Si tus secrets están en un entorno específico
+    environment: minibit_prod
+    
+    steps:
+      - name: Check secrets
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "=== Verificando secrets $MY_VAR ==="
+          
+          # Verificar SERVER_IP
+          if [ -z "$SERVER_IP" ]; then
+            echo "❌ SERVER_IP is EMPTY or NOT SET"
+          else
+            echo "✅ SERVER_IP exists: $SERVER_IP"
+          fi
+          
+          # Verificar SERVER_USER
+          if [ -z "$SERVER_USER" ]; then
+            echo "❌ SERVER_USER is EMPTY or NOT SET"
+          else
+            echo "✅ SERVER_USER exists: $SERVER_USER"
+          fi
+          
+          # Verificar SSH_PRIVATE_KEY (solo si existe, sin mostrar el contenido)
+          if [ -z "$SSH_PRIVATE_KEY" ]; then
+            echo "❌ SSH_PRIVATE_KEY is EMPTY or NOT SET"
+          else
+            echo "✅ SSH_PRIVATE_KEY exists (length: ${#SSH_PRIVATE_KEY} characters)"
+          fi
