@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: minibit_prod
 
-
     steps:
       - name: Test SSH Connection
         uses: appleboy/ssh-action@v1.0.0
@@ -21,9 +20,8 @@ jobs:
           port: 5529
           debug: true
           script: |
-            echo "✅ Conexión SSH exitosa!"
-            echo "Server: $(hostname)"
-            echo "IP: $(hostname -I)"
-            echo "Usuario: $(whoami)"
-            echo "Directorio: $(pwd)"
-            echo "Kernel: $(uname -a)"
+            # Make script executable if needed
+            chmod +x /root/minibit/deploy.sh
+
+            # Execute the deploy script
+            /root/minibit/deploy.sh
