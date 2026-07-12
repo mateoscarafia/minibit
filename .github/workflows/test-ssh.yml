@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: Test SSH Connection
         uses: appleboy/ssh-action@v1.0.0
+        run: echo "$MY_VAR!"
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
