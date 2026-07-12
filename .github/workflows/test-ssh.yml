@@ -11,10 +11,7 @@ env:
 jobs:
   check-secrets:
     runs-on: ubuntu-latest
-    
-    # IMPORTANTE: Si tus secrets están en un entorno específico
-    environment: minibit_prod
-
+  
     env:
       MY_VAR_ENV: ${{ vars.MY_VAR }}
     
