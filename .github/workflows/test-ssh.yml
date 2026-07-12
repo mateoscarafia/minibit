@@ -11,6 +11,9 @@ env:
 jobs:
   check-secrets:
     runs-on: ubuntu-latest
+    
+    # IMPORTANTE: Si tus secrets están en un entorno específico
+    environment: minibit_prod
 
     env:
       MY_VAR_ENV: "MY_VAR"
@@ -21,12 +24,12 @@ jobs:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        
         run: |
           echo "=== Verificando secrets ==="
-
-          Global: $MY_VAR_ENV
-          Job: $MY_VAR
+          
+          # ✅ CORREGIDO: Las variables de entorno se usan con $
+          echo "Global: $MY_VAR"
+          echo "Job: $MY_VAR_ENV"
           
           # Verificar SERVER_IP
           if [ -z "$SERVER_IP" ]; then
