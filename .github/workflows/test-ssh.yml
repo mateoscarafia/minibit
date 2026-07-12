@@ -4,12 +4,16 @@ on:
   push:
     branches: [ master ]
 
+env:
+  MY_VAR: "MY_VAR"
+  APP_NAME: "mi-app"
+
 jobs:
   check-secrets:
     runs-on: ubuntu-latest
-    
-    # Si tus secrets están en un entorno específico
-    environment: minibit_prod
+
+    env:
+      MY_VAR_ENV: "MY_VAR"
     
     steps:
       - name: Check secrets
@@ -17,6 +21,11 @@ jobs:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "Global: $MY_VAR_ENV"
+          echo "Job: $MY_VAR"
+        
         run: |
           echo "=== Verificando secrets $MY_VAR ==="
           
