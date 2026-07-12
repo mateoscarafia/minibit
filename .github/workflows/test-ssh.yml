@@ -23,7 +23,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         
         run: |
-          echo "=== Verificando secrets $MY_VAR ==="
+          echo "=== Verificando secrets ==="
 
           Global: $MY_VAR_ENV
           Job: $MY_VAR
