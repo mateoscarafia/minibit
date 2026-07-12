@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: minibit_prod
 
+
     steps:
       - name: Test SSH Connection
         uses: appleboy/ssh-action@v1.0.0
