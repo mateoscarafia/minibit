@@ -16,7 +16,7 @@ jobs:
     environment: minibit_prod
 
     env:
-      MY_VAR_ENV: "MY_VAR"
+      MY_VAR_ENV: ${{ variables.MY_VAR }}
     
     steps:
       - name: Check secrets
