@@ -14,7 +14,7 @@ jobs:
   
 
 
-  
+
     env:
       MY_VAR_ENV: ${{ vars.MY_VAR }}
     
@@ -35,14 +35,14 @@ jobs:
           if [ -z "$SERVER_IP" ]; then
             echo "❌ SERVER_IP is EMPTY or NOT SET"
           else
-            echo "✅ SERVER_IP exists: $SERVER_IP"
+            echo "✅ SERVER_IP exists: ${#SERVER_IP} characters"
           fi
           
           # Verificar SERVER_USER
           if [ -z "$SERVER_USER" ]; then
             echo "❌ SERVER_USER is EMPTY or NOT SET"
           else
-            echo "✅ SERVER_USER exists: $SERVER_USER"
+            echo "✅ SERVER_USER exists: ${#SERVER_USER} characters"
           fi
           
           # Verificar SSH_PRIVATE_KEY (solo si existe, sin mostrar el contenido)
