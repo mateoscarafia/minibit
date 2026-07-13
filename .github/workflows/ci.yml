@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,7 @@ jobs:
 
       - name: Run tests
         run: npm run test
-  ssh:
+  cd:
     runs-on: ubuntu-latest
     environment: minibit_prod
 
