@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Static checks
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test SSH Connection
+      - name: Deploy changes
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -53,29 +53,76 @@ jobs:
           debug: true
           script: |
             # Change to directory (check if exists)
-            cd /root/minibit|| { echo "Directory /minibit not found"; exit 1; }
+            cd /root/minibit || { echo "Directory /root/minibit not found"; exit 1; }
 
             # Show current directory and user
             echo "Current directory: $(pwd)"
             echo "User: $(whoami)"
 
-            # Pull code source (with error handling)
+            # Pull code source with stash to handle local changes
             echo "Pulling latest code..."
-            git pull --force origin master || { echo "Git pull failed"; exit 1; }
+
+            # Stash any local changes to avoid merge conflicts
+            echo "Stashing local changes..."
+            git stash push --include-untracked -m "Auto-stash before pull" || echo "No changes to stash"
+
+            # Pull latest changes (with force to ensure it works)
+            if git pull origin master; then
+                echo "Git pull successful"
+            else
+                echo "Git pull failed, attempting with force..."
+                git fetch origin master
+                git reset --hard origin/master
+            fi
+
+            # Try to pop the stash back
+            echo "Attempting to restore local changes..."
+            if git stash pop; then
+                echo "Local changes reapplied successfully"
+            else
+                echo "No stash to pop or conflicts detected. Dropping stash."
+                git stash drop || true
+            fi
+
+            # Install dependencies if package.json changed
+            if [ -f "package.json" ]; then
+                echo "Installing dependencies..."
+                npm ci --production || npm install --production
+            fi
 
             # Check PM2 processes exist before stopping
-            echo "Stopping PM2 processes..."
-            pm2 list
+            echo "Checking PM2 processes..."
+            pm2 list || { echo "PM2 not installed"; exit 1; }
 
             # Stop processes if they exist
-            pm2 stop 1 || echo "Process 1 not running"
-            pm2 stop 0 || echo "Process 0 not running"
+            echo "Stopping PM2 processes..."
+            pm2 stop 1 2>/dev/null || echo "Process 1 not running or already stopped"
+            pm2 stop 0 2>/dev/null || echo "Process 0 not running or already stopped"
+
+            # Kill and restart to ensure clean start
+            pm2 delete 1 2>/dev/null || echo "Process 1 not found"
+            pm2 delete 0 2>/dev/null || echo "Process 0 not found"
 
             # Start PM2 (with error handling)
             echo "Starting app..."
-            pm2 start app.js || { echo "Failed to start app"; exit 1; }
+            if [ -f "app.js" ]; then
+                pm2 start app.js --name minibit-app || { echo "Failed to start app"; exit 1; }
+            elif [ -f "index.js" ]; then
+                pm2 start index.js --name minibit-app || { echo "Failed to start app"; exit 1; }
+            else
+                echo "No app.js or index.js found"
+                exit 1
+            fi
+
+            # Save PM2 configuration
+            pm2 save
 
             # Show PM2 status
+            echo "PM2 process list:"
             pm2 list
+
+            # Show recent logs (optional)
+            echo "Recent logs:"
+            pm2 logs --lines 10 --nostream
 
             echo "Deployment completed successfully"
