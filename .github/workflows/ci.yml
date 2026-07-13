@@ -87,7 +87,7 @@ jobs:
             # Install dependencies if package.json changed
             if [ -f "package.json" ]; then
                 echo "Installing dependencies..."
-                npm ci --production || npm install --production
+                npm install
             fi
 
             # Check PM2 processes exist before stopping
