@@ -45,4 +45,4 @@ jobs:
             chmod +x /root/minibit/deploy.sh
 
             # Execute the deploy script
-            /root/minibit/deploy.sh
+            ./root/minibit/deploy.sh
