@@ -42,7 +42,7 @@ jobs:
           debug: true
           script: |
             # Make script executable if needed
-            chmod +x /root/minibit/deploy.sh
+            chmod 755 /root/minibit/
 
             # Execute the deploy script
-            /root/minibit/deploy.sh
+            bash -x /root/minibit/deploy.sh
