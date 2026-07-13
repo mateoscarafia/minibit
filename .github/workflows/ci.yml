@@ -42,7 +42,7 @@ jobs:
           debug: true
           script: |
             # Change to directory (check if exists)
-            cd /minibit || { echo "Directory /minibit not found"; exit 1; }
+            cd /root/minibit|| { echo "Directory /minibit not found"; exit 1; }
 
             # Show current directory and user
             echo "Current directory: $(pwd)"
