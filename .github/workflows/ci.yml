@@ -1,4 +1,4 @@
-name: Test SSH Connection
+name: Minibit CI/CD workflow
 
 on:
   push:
@@ -45,4 +45,4 @@ jobs:
             chmod +x /root/minibit/deploy.sh
 
             # Execute the deploy script
-            ./root/minibit/deploy.sh
+            ./deploy.sh
