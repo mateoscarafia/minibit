@@ -25,7 +25,12 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
+        env:
+          # For public npm (optional, but good practice)
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN || '' }}
+          # For GitHub Packages
+          # NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check commit message format
         uses: wagoid/commitlint-github-action@v5
