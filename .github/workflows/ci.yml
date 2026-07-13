@@ -61,7 +61,7 @@ jobs:
 
             # Pull code source (with error handling)
             echo "Pulling latest code..."
-            git pull origin master || { echo "Git pull failed"; exit 1; }
+            git pull --force origin master || { echo "Git pull failed"; exit 1; }
 
             # Check PM2 processes exist before stopping
             echo "Stopping PM2 processes..."
