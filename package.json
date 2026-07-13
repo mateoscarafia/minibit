@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"TESTS ARE RUNNING\" && exit 0"
+    "test": "echo \"TESTS ARE RUNNING\" && exit 0",
+    "lint": "echo \"LINT IS RUNNING\" && exit 0"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo "Executed" > deploy.txt
-echo "Fecha: $(date)" >> deploy.txt
+echo "Executed" >  /root/minibit/deploy.txt
 
 echo "✅ deploy.txt actualizado con 'Executed'"
