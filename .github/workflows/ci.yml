@@ -27,9 +27,9 @@ jobs:
 
       - name: Run tests
         run: npm run test
+
   cd:
     runs-on: ubuntu-latest
-    environment: minibit_prod
 
     steps:
       - name: Test SSH Connection
@@ -41,8 +41,30 @@ jobs:
           port: 5529
           debug: true
           script: |
-            # Make script executable if needed
-            chmod 755 /root/minibit/
+            # Change to directory (check if exists)
+            cd /minibit || { echo "Directory /minibit not found"; exit 1; }
 
-            # Execute the deploy script
-            bash -x /root/minibit/deploy.sh
+            # Show current directory and user
+            echo "Current directory: $(pwd)"
+            echo "User: $(whoami)"
+
+            # Pull code source (with error handling)
+            echo "Pulling latest code..."
+            git pull origin master || { echo "Git pull failed"; exit 1; }
+
+            # Check PM2 processes exist before stopping
+            echo "Stopping PM2 processes..."
+            pm2 list
+
+            # Stop processes if they exist
+            pm2 stop 1 || echo "Process 1 not running"
+            pm2 stop 0 || echo "Process 0 not running"
+
+            # Start PM2 (with error handling)
+            echo "Starting app..."
+            pm2 start app.js || { echo "Failed to start app"; exit 1; }
+
+            # Show PM2 status
+            pm2 list
+
+            echo "Deployment completed successfully"
